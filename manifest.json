@@ -1,0 +1,24 @@
+{
+  "name": "TodoistChute",
+  "description": "Todoistに完了予定時刻とかを表示",
+  "version": "1.0.1",
+  "manifest_version": 2,
+  "browser_action": {
+        "default_icon": "icon.png"
+  },
+  "icons" : {
+     "128": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.todoist.com/*"],
+      "js": ["jquery-3.3.1.min.js", "tc.js"],
+      "css": ["tc.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html",
+  "permissions": [
+    "storage"
+  ]
+}

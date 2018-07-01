@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TodoistChuteの設定</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="options.js"></script>
+  </head>
+  <body>
+    <h1>TodoistChuteの設定</h1>
+
+    <dl>
+      <dt>タスク集計方法</dt>
+      <dd>
+        <form>
+          <input type="radio" name="countMode" value="auto" id="countMode01" checked="checked" />
+          <label for="countMode01">自動選択</label>
+          <input type="radio" name="countMode" value="label" id="countMode02" />
+          <label for="countMode02">ラベルから集計（有料プラン向け）</label>
+          <input type="radio" name="countMode" value="text" id="countMode03" />
+          <label for="countMode03">タスクテキストから集計（無料プラン向け）</label>
+        </form>
+      </dd>
+    </dl>
+    <dl>
+      <dt>開始時刻の初期値</dt>
+      <dd>
+        <form>
+          <input type="time" name="begintime" id="begintime" value="09:00" />
+        </form>
+      </dd>
+    </dl>
+    <dl>
+      <dt>休憩時間の初期値</dt>
+      <dd>
+        <form>
+          <input type="time" name="breaktime" id="breaktime" value="01:30" />
+        </form>
+      </dd>
+    </dl>
+    <p>
+      <input type="submit" value="保存" id="save">
+    </p>
+  </body>
+</html>

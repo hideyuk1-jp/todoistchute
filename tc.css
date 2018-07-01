@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+#tc {
+  vertical-align: top;
+  font-size: .9em;
+  padding: 74px 25px 0 30px;
+  margin-bottom: -56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 0
+}
+
+#tc .tc-item {
+  text-align: center;
+  border: solid 1px #ddd
+}
+
+#tc .tc-item h2 {
+  font-size: 1em;
+  margin: 0;
+  font-weight: normal;
+  border-bottom: solid 1px #ddd
+}
+
+#begintime, #breaktime {
+  padding: 3px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px
+}
+
+#tc .tc-item h2, #tc .tc-item div {
+  margin: 0;
+  padding: 4px
+}
+
+#tc #item1 {
+  grid-row: 2;
+  grid-column: 1;
+  border-right: 0;
+  border-top-left-radius: 4px;
+  -moz-border-top-left-radius: 4px;
+  -webkit-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
+  -ms-border-top-left-radius: 4px
+}
+
+#tc #item2 {
+  grid-row: 2;
+  grid-column: 2
+}
+
+#tc #item3 {
+  grid-row: 2;
+  grid-column: 3;
+  border-left: 0;
+  border-top-right-radius: 4px;
+  -moz-border-top-right-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
+  -ms-border-top-right-radius: 4px
+}
+
+#tc #item4 {
+  grid-row: 1;
+  grid-column: 1/4;
+  border: 0;
+  margin-bottom: 8px
+}
+
+#tc #item5 {
+  grid-row: 3;
+  grid-column: 1/4;
+  border: 0;
+  font-size: 0;
+  overflow: hidden;
+  border-bottom-left-radius: 4px;
+  -moz-border-bottom-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
+  -ms-border-bottom-left-radius: 4px border-bottom-right-radius: 4px;
+  -moz-border-bottom-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
+  -ms-border-bottom-right-radius: 4px
+}
+
+#tc #item5>div {
+  display: inline-block;
+  height: 9px;
+  padding: 0;
+  margin: 0
+}
+
+#tc #tc-cnt, #tc #tc-endtime, #tc #tc-hour {
+  font-size: 1.4em;
+  font-weight: bold;
+  font-family: Hervetica
+}
+
+#tc select, #tc option, #tc input {
+  font-size: inherit
+}
+
+.tc-counted {
+  color: #0082c5
+}
