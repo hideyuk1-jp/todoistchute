@@ -1,19 +1,19 @@
 {
   "name": "TodoistChute",
-  "description": "Todoistに完了予定時刻とかを表示",
-  "version": "1.0.1",
+  "description": "Todoistのタスクに設定した見積時間を集計して完了予定時刻を表示します。",
+  "version": "1.0.2",
   "manifest_version": 2,
   "browser_action": {
-        "default_icon": "icon.png"
+        "default_icon": "img/icon.png"
   },
   "icons" : {
-     "128": "icon.png"
+     "128": "img/icon.png"
   },
   "content_scripts": [
     {
       "matches": ["https://*.todoist.com/*"],
-      "js": ["jquery-3.3.1.min.js", "tc.js"],
-      "css": ["tc.css"],
+      "js": ["js/lib/jquery-3.3.1.min.js", "js/tc.js"],
+      "css": ["css/tc.css"],
       "run_at": "document_idle"
     }
   ],

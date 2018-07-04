@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-#tc {
+#tc-wrapper {
   vertical-align: top;
   font-size: .9em;
   padding: 74px 25px 0 30px;
@@ -10,12 +10,12 @@
   grid-gap: 0
 }
 
-#tc .tc-item {
+#tc-wrapper .tc-item {
   text-align: center;
   border: solid 1px #ddd
 }
 
-#tc .tc-item h2 {
+#tc-wrapper .tc-item h2 {
   font-size: 1em;
   margin: 0;
   font-weight: normal;
@@ -33,12 +33,12 @@
   -ms-border-radius: 4px
 }
 
-#tc .tc-item h2, #tc .tc-item div {
+#tc-wrapper .tc-item h2, #tc-wrapper .tc-item div {
   margin: 0;
   padding: 4px
 }
 
-#tc #item1 {
+#tc-wrapper #tc-tasknum {
   grid-row: 2;
   grid-column: 1;
   border-right: 0;
@@ -49,12 +49,12 @@
   -ms-border-top-left-radius: 4px
 }
 
-#tc #item2 {
+#tc-wrapper #tc-totaltime {
   grid-row: 2;
   grid-column: 2
 }
 
-#tc #item3 {
+#tc-wrapper #tc-finishtime {
   grid-row: 2;
   grid-column: 3;
   border-left: 0;
@@ -65,14 +65,14 @@
   -ms-border-top-right-radius: 4px
 }
 
-#tc #item4 {
+#tc-wrapper #tc-settingitems {
   grid-row: 1;
   grid-column: 1/4;
   border: 0;
   margin-bottom: 8px
 }
 
-#tc #item5 {
+#tc-wrapper #tc-projectbar {
   grid-row: 3;
   grid-column: 1/4;
   border: 0;
@@ -89,20 +89,20 @@
   -ms-border-bottom-right-radius: 4px
 }
 
-#tc #item5>div {
+#tc-wrapper #tc-projectbar>div {
   display: inline-block;
   height: 9px;
   padding: 0;
   margin: 0
 }
 
-#tc #tc-cnt, #tc #tc-endtime, #tc #tc-hour {
+#tc-wrapper #tc-cnt, #tc-wrapper #tc-endtime, #tc-wrapper #tc-hour {
   font-size: 1.4em;
   font-weight: bold;
   font-family: Hervetica
 }
 
-#tc select, #tc option, #tc input {
+#tc-wrapper select, #tc-wrapper option, #tc-wrapper input {
   font-size: inherit
 }
 

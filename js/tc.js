@@ -1,7 +1,12 @@
+/**
+ * @license TodoistChute
+ * (c) 2018 hideyuk1 https://hideyuk1.com
+ * License: MIT
+ */
 $(function() {
   var strall = "指定しない"; //日付を選択しない場合に表示される文字
   var timePrefix = "//"; //見積時間の接頭辞
-  var countMode = "auto";
+  var defaultCountMode = "auto";
   var defaultBeginTime = "09:00"; //開始時刻の初期値
   var defaultBreakTime = "01:00"; //休憩時刻の初期値
   var tchtml;
@@ -9,37 +14,34 @@ $(function() {
   //設定をchrome.storageから読込
   chrome.storage.sync.get(
     {
-      tc_countMode: countMode,
+      tc_countMode: defaultCountMode,
       tc_begintime: defaultBeginTime,
       tc_breaktime: defaultBreakTime
     },
     function(options) {
-      console.log(options);
-      if (options.tc_countMode) countMode = options.tc_countMode;
-
       //挿入される要素
-      tchtml = '<div id="tc"><div id="item1" class="tc-item"><h2>残りタスク</h2><div><span id="tc-cnt">-</span></div></div><div id="item2" class="tc-item"><h2>見積時間</h2><div><span id="tc-hour">-</span></div></div><div id="item3" class="tc-item"><h2>完了予定</h2><div><span id="tc-endtime">-</span></div></div><div id="item4" class="tc-item"> 日付：<select id="tc-date"><option value="ALL">' + strall + '</option></select>　開始時刻：<input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　休憩時間：<input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="time" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /></div><div id="item5"></div></div>';
+      tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>残りタスク</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>見積時間</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>完了予定</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> 日付：<select id="tc-date"><option value="ALL">' + strall + '</option></select>　開始時刻：<input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　休憩時間：<input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="time" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /></div><div id="tc-projectbar"></div></div>';
 
       //時間計算を実行
-      calcTime();
+      calcTime(options.tc_countMode);
 
       //1秒おきに時間計算を実行
-      setInterval(calcTime, 1000);
+      setInterval(function(){calcTime(options.tc_countMode)}, 1000);
 
       //開始時刻や休憩時間のチェックボックスがクリックされた時
       $('#chbegintime').click(function() {
         $('#begintime').prop('disabled', !($('#chbegintime').prop('checked')));
-        calcTime();
+        calcTime(options.tc_countMode);
       });
       $('#chbreaktime').click(function() {
         $('#breaktime').prop('disabled', !($('#chbreaktime').prop('checked')));
-        calcTime();
+        calcTime(options.tc_countMode);
       });
     }
   );
 
   //時間計測
-  function calcTime() {
+  function calcTime(countMode) {
     var taskList,
       taskTime = 0,
       i, j,
@@ -52,20 +54,18 @@ $(function() {
 
     //印刷画面の時やアクティビティ画面の時は初期化して終了
     if (location.search.match(/print_mode=1/) || location.hash.match(/activity/)) {
-      $('#tc').remove();
+      $('#tc-wrapper').remove();
       calcEndTime = new Date();
       //console.log("calc: " + (calcEndTime.getTime() - calcStartTime.getTime()) + "ms");
       return false;
     }
 
-    //#tcがない場合は挿入
-    if (!($('#tc').length)) tcInsert();
+    //#tc-wrapperがない場合は挿入
+    if (!($('#tc-wrapper').length)) tcInsert();
 
-    //集計方法が自動の場合はラベルの有無で見積時間の集計方法変更
-    if (countMode =='auto') {
-      if ($('.labels_holder').length) countMode = 'label';
-      else countMode = 'text';
-    }
+    //集計方法が自動選択の場合はラベルの有無で見積時間の集計方法変更
+    if (countMode == 'auto') countMode = ($('.labels_holder').length) ? 'label' : 'text';
+    //console.log(countMode);
 
     //日付リスト作成
     getDateList();
@@ -153,19 +153,19 @@ $(function() {
     $('#tc-endtime').text((date.getHours() + ddiff * 24) + ':' + ('0' + date.getMinutes()).slice(-2));
     //プロジェクトバーを更新
     //初期化
-    $('#item5').empty();
+    $('#tc-projectbar').empty();
     if (prjbar.length > 0) {
       //プロジェクトカラーが存在する場合
       //プロジェクトバー表示
-      $('#item5').css('display', '');
-      $('#item1').css({
+      $('#tc-projectbar').css('display', '');
+      $('#tc-tasknum').css({
         'border-bottom-left-radius': '0',
         '-moz-border-bottom-left-radius': '0',
         '-webkit-border-bottom-left-radius': '0',
         '-o-border-bottom-left-radius': '0',
         '-ms-border-bottom-left-radius': '0'
       });
-      $('#item3').css({
+      $('#tc-finishtime').css({
         'border-bottom-right-radius': '0',
         '-moz-border-bottom-right-radius': '0',
         '-webkit-border-bottom-right-radius': '0',
@@ -175,28 +175,28 @@ $(function() {
 
       var n = 0.00;
       for (i = 0; i < prjbar.length; i++) {
-        $('#item5').append($("<div></div>"));
+        $('#tc-projectbar').append($("<div></div>"));
         //barのwidthを指定
-        $('#item5 div:last').css('width', (Math.floor(prjbar[i].cnt / taskList.length * 100 * 1000) / 1000) + '%');
+        $('#tc-projectbar div:last').css('width', (Math.floor(prjbar[i].cnt / taskList.length * 100 * 1000) / 1000) + '%');
         //最後のbarのwidthは合計100%になるように指定
-        if (i == prjbar.length - 1) $('#item5 div:last').css('width', (100.00 - n) + '%');
+        if (i == prjbar.length - 1) $('#tc-projectbar div:last').css('width', (100.00 - n) + '%');
         //背景色をプロジェクトカラーに指定
-        $('#item5 div:last').css('background-color', prjbar[i].color);
+        $('#tc-projectbar div:last').css('background-color', prjbar[i].color);
         //widthの合計を記録
         n += (Math.floor(prjbar[i].cnt / taskList.length * 100 * 1000) / 1000);
       }
     } else {
       //プロジェクトカラーが存在しない場合（プロジェクトのページなど）
       //プロジェクトバー非表示
-      $('#item5').css('display', 'none');
-      $('#item1').css({
+      $('#tc-projectbar').css('display', 'none');
+      $('#tc-tasknum').css({
         'border-bottom-left-radius': '4px',
         '-moz-border-bottom-left-radius': '4px',
         '-webkit-border-bottom-left-radius': '4px',
         '-o-border-bottom-left-radius': '4px',
         '-ms-border-bottom-left-radius': '4px'
       });
-      $('#item3').css({
+      $('#tc-finishtime').css({
         'border-bottom-right-radius': '4px',
         '-moz-border-bottom-right-radius': '4px',
         '-webkit-border-bottom-right-radius': '4px',
@@ -212,7 +212,7 @@ $(function() {
   //TodoistChute挿入
   function tcInsert() {
     //初期化
-    $('#tc').remove();
+    $('#tc-wrapper').remove();
     //html挿入
     $('#content').prepend(tchtml);
   };
