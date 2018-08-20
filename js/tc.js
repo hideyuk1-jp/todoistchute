@@ -11,6 +11,8 @@ $(function() {
   var defaultBreakTime = "01:00"; //休憩時刻の初期値
   var tchtml;
 
+  var taskContent = null;
+
   //設定をchrome.storageから読込
   chrome.storage.sync.get(
     {
@@ -22,18 +24,29 @@ $(function() {
       //挿入される要素
       tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>残りタスク</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>見積時間</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>完了予定</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> 日付：<select id="tc-date"><option value="ALL">' + strall + '</option></select>　開始時刻：<input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　休憩時間：<input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="time" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /></div><div id="tc-projectbar"></div></div>';
 
-      //時間計算を実行
-      calcTime(options.tc_countMode);
-
+      //task_itemに変更があれば時間計算を実行
+      var check = function(tc_countMode) {
+        if (taskContent != $('.section_header, .subsection_header, .task_item').text()) {
+            calcTime(tc_countMode);
+            taskContent = $('.section_header, .subsection_header, .task_item').text();
+        }
+      };
       //1秒おきに時間計算を実行
-      setInterval(function(){calcTime(options.tc_countMode)}, 1000);
+      setInterval(function(){check(options.tc_countMode)}, 1000);
+
+      //日付が変更された時
+      $('#content').on('change','#tc-date',function() {calcTime(options.tc_countMode)});
+
+      //開始時刻や休憩時間が変更された時
+      $('#content').on('change','#begintime',function() {calcTime(options.tc_countMode)});
+      $('#content').on('change','#breaktime',function() {calcTime(options.tc_countMode)});
 
       //開始時刻や休憩時間のチェックボックスがクリックされた時
-      $('#chbegintime').click(function() {
+      $('#content').on('click','#chbegintime',function() {
         $('#begintime').prop('disabled', !($('#chbegintime').prop('checked')));
         calcTime(options.tc_countMode);
       });
-      $('#chbreaktime').click(function() {
+      $('#content').on('click','#chbreaktime',function() {
         $('#breaktime').prop('disabled', !($('#chbreaktime').prop('checked')));
         calcTime(options.tc_countMode);
       });
@@ -51,6 +64,8 @@ $(function() {
       prjbar = [];
     var calcStartTime = new Date(),
       calcEndTime;
+
+    //console.log("calcTime run!");
 
     //印刷画面の時やアクティビティ画面の時は初期化して終了
     if (location.search.match(/print_mode=1/) || location.hash.match(/activity/)) {
