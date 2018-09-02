@@ -26,9 +26,9 @@ $(function() {
 
       //task_itemに変更があれば時間計算を実行
       var check = function(tc_countMode) {
-        if (taskContent != $('.section_header, .subsection_header, .task_item').text()) {
+        if (taskContent != $('#content').find('.section_header, .subsection_header, .task_item').text()) {
             calcTime(tc_countMode);
-            taskContent = $('.section_header, .subsection_header, .task_item').text();
+            taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
         }
       };
       //1秒おきに時間計算を実行
@@ -84,15 +84,16 @@ $(function() {
 
     //日付リスト作成
     getDateList();
+    var tcDateVal = $('#tc-date').val();
 
     //タスクリストの取得
-    taskList = $('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
+    taskList = $('#content').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
     if (mode7days == 1 && tcDateVal != 'ALL') {
       //次の7日間で日付指定の場合
-      taskList = $(".subsection_header > a:contains('" + tcDateVal + "')").closest('div').next('ul').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
+      taskList = $('#content').find(".subsection_header > a:contains('" + tcDateVal + "')").closest('div').next('ul').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
     } else if (tcDateVal != 'ALL') {
       //次の7日間以外で日付指定の場合
-      taskList = $(".div_due_date:contains('" + tcDateVal + "')" + ".div_due_date:not(:contains('1" + tcDateVal + "'))").closest('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
+      taskList = $('#content').find(".div_due_date:contains('" + tcDateVal + "')" + ".div_due_date:not(:contains('1" + tcDateVal + "'))").closest('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
     }
 
     for (i = 0; i < taskList.length; i++) {
@@ -238,7 +239,7 @@ $(function() {
   var tcDateVal;
 
   function getDateList() {
-    var i, j, dval;
+    var i, j, dval, tcDateVal;
 
     //現在選択中の日付を退避
     tcDateVal = $('#tc-date').val();
@@ -252,7 +253,7 @@ $(function() {
     $('#tc-date').append($('<option></option>').val('ALL').text(strall));
 
     //日付リストを取得
-    dateList = $('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)').find(".div_due_date .date");
+    dateList = $('#content').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)').find(".div_due_date .date");
 
     //次の7日間の場合
     if ($('#next7days').length) {

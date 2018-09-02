@@ -5,6 +5,7 @@
     <title>TodoistChuteの設定</title>
     <script src="js/lib/jquery-3.3.1.min.js"></script>
     <script src="js/options.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/options.css" media="all">
   </head>
   <body>
     <h1>TodoistChuteの設定</h1>
@@ -20,6 +21,10 @@
           <input type="radio" name="countMode" value="text" id="countMode03" />
           <label for="countMode03">タスクテキストから集計（無料プラン向け）</label>
         </form>
+        <p class="text-gray">
+          自動選択を選択するとラベル（見積時間と関係のないものを含む）の存在によって集計方法が変わります。<br />
+          ラベルが存在する場合はラベルに入力された見積時間から集計を行い、ラベルが存在しない場合はタスクテキストに入力された見積時間から集計を行います。
+        </p>
       </dd>
     </dl>
     <dl>

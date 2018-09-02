@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.text-gray {
+  color: #aaa
+}
+
+form label {
+  margin-right: 10px;
+}
+
+dt, dd {
+  display: inline-block;
+  vertical-align: top;
+}
+
+dt {
+  width: 150px
+}
+
+dd {
+  margin-left: 10px;
+}
