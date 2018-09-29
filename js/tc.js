@@ -9,26 +9,67 @@ $(function() {
   var defaultCountMode = "auto";
   var defaultBeginTime = "09:00"; //開始時刻の初期値
   var defaultBreakTime = "01:00"; //休憩時刻の初期値
+  var defaultLinkIcon = "false"; //リンクアイコン挿入の初期値
+  var defaultTaskBar = "true"; //タスクバー使用の初期値
   var tchtml;
 
+  var tcCurrentDate = new Date();
+  var tcStartDate;
+
   var taskContent = null;
+  var tcWidth = null;
+
+  var tc_taskbar;
+
+  //fontawesome挿入
+  $('head').append('<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">');
 
   //設定をchrome.storageから読込
   chrome.storage.sync.get(
     {
       tc_countMode: defaultCountMode,
       tc_begintime: defaultBeginTime,
-      tc_breaktime: defaultBreakTime
+      tc_breaktime: defaultBreakTime,
+      tc_linkicon: defaultLinkIcon,
+      tc_taskbar: defaultTaskBar
     },
     function(options) {
       //挿入される要素
-      tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>残りタスク</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>見積時間</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>完了予定</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> 日付：<select id="tc-date"><option value="ALL">' + strall + '</option></select>　開始時刻：<input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　休憩時間：<input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="time" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /></div><div id="tc-projectbar"></div></div>';
+      tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>残りタスク</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>見積時間</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>完了予定</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> 日付：<select id="tc-date"><option value="ALL">' + strall + '</option></select>　開始時刻：<input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　休憩時間：<input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="time" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /></div><div id="tc-taskbar"></div></div>';
 
-      //task_itemに変更があれば時間計算を実行
+      //フラグがtrueであればリンクアイコンのcssを挿入
+      if (options.tc_linkicon == "true") $('head').append('<style type="text/css"><!-- .sel_item_content a.ex_link:after {margin: 0 3px;font-family: FontAwesome;content: "\\f08e";font-size: 100%;} --></style>');
+
+      tc_taskbar = options.tc_taskbar
+
+      //タスクや幅に変更があれば時間計算を実行
       var check = function(tc_countMode) {
+        //タスクアイテムが変わったら時間計測を実行
         if (taskContent != $('#content').find('.section_header, .subsection_header, .task_item').text()) {
-            calcTime(tc_countMode);
-            taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
+          //console.log("task_item changed!");
+          calcTime(tc_countMode);
+          taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
+          tcWidth = $('#tc-wrapper').width();
+          return true;
+        }
+
+        //widthが変わったら時間計測を実行
+        if (tcWidth != $('#tc-wrapper').width()) {
+          //console.log("width changed!");
+          calcTime(tc_countMode);
+          taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
+          tcWidth = $('#tc-wrapper').width();
+          return true;
+        }
+
+        //現在時刻が変わったら時間計測を実行
+        var time1 = tcCurrentDate.getHours() + ':' + ('0' + tcCurrentDate.getMinutes()).slice(-2);
+        var date2 = new Date();
+        var time2 = date2.getHours() + ':' + ('0' + date2.getMinutes()).slice(-2);
+        if (time1 != time2) {
+          //console.log("start time changed! " + time1 + "=>" + time2);
+          calcTime(tc_countMode);
+          return true;
         }
       };
       //1秒おきに時間計算を実行
@@ -50,6 +91,11 @@ $(function() {
         $('#breaktime').prop('disabled', !($('#chbreaktime').prop('checked')));
         calcTime(options.tc_countMode);
       });
+
+      //開始時刻や休憩時間のチェックボックスがクリックされた時
+      $('#content').on('click','#tc-taskbar .task',function() {
+        $("html,body").scrollTop($('#' + $(this).data('target')).offset().top - $('#top_bar').height());
+      });
     }
   );
 
@@ -57,11 +103,12 @@ $(function() {
   function calcTime(countMode) {
     var taskList,
       taskTime = 0,
+      taskTimeTmp,
       i, j,
       labelList, labelTmp,
       textList, textTmp,
-      prjcolorTmp, prjbarflag,
-      prjbar = [];
+      prjnameTmp, prjcolorTmp, taskbarflag,
+      taskbar = [];
     var calcStartTime = new Date(),
       calcEndTime;
 
@@ -98,11 +145,12 @@ $(function() {
 
     for (i = 0; i < taskList.length; i++) {
       //見積時間の合計を計算
+      taskTimeTmp = 0;
       if (countMode == 'label') { //ラベルから集計
         labelList = $(taskList[i]).find('.label:not(.label_sep)');
         for (j = 0; j < labelList.length; j++) {
           labelTmp = $(labelList[j]).text().replace(timePrefix, '');
-          if ($.isNumeric(labelTmp)) taskTime += parseInt(labelTmp);
+          if ($.isNumeric(labelTmp)) taskTimeTmp += parseInt(labelTmp);
         }
       } else if (countMode == 'text') { //タスクテキストから集計
         $(taskList[i]).find('.sel_item_content').contents().each(function(index, element) {
@@ -112,36 +160,49 @@ $(function() {
             if (!textList) return false;
             for (j = 0; j < textList.length; j++) {
               textTmp = textList[j].replace(timePrefix, '');
-              if ($.isNumeric(textTmp)) taskTime += parseInt(textTmp);
+              if ($.isNumeric(textTmp)) taskTimeTmp += parseInt(textTmp);
             }
           }
         });
       }
-      //プロジェクトカラーと数の取得
+      taskTime += taskTimeTmp;
+
+      //タスクバーを使用しない場合は次へ
+      if (tc_taskbar != "true") continue;
+
+      //タスクバー作成のための処理
+      taskText = "";
+      $(taskList[i]).find('.sel_item_content').contents().each(function(){
+        if ($(this).hasClass('note_icon')) return false;
+        taskText += $(this).text();
+      });
+
+      //プロジェクトの名前とカラー取得
+      prjnameTmp = $(taskList[i]).find('.project_item__name').text();
       prjcolorTmp = $(taskList[i]).find('.project_item__color').css('background-color');
 
-      //プロジェクトカラーが取得出来ない場合は次へ
-      if (!prjcolorTmp) continue;
+      //取得出来ない場合は次へ
+      if (!prjnameTmp || !prjcolorTmp) continue;
 
-      //同じカラーが配列にないかチェック
-      prjbarflag = false;
-      for (j = 0; j < prjbar.length; j++) {
-        if (prjbar[j].color == prjcolorTmp) {
-          prjbarflag = true;
-          break;
-        }
-      }
-      if (prjbarflag) {
-        //同じカラーが配列にある場合はカウントを1増やす
-        prjbar[j].cnt++;
+      //同じプロジェクトが配列にないかチェック
+      taskbarflag = false;
+      if (taskbarflag) {
+        //同じプロジェクトが配列にある場合はカウントを1増やす
+        taskbar[j].time += taskTimeTmp;
+        taskbar[j].cnt++;
       } else {
-        //同じカラーが配列にない場合はカウントは1にして追加
-        prjbar[prjbar.length] = {
+        //同じプロジェクトが配列にない場合はカウントは1にして新規追加
+        taskbar[taskbar.length] = {
+          tasktext: taskText,
+          name: prjnameTmp,
           color: prjcolorTmp,
+          time: taskTimeTmp,
+          id: $(taskList[i]).attr('id'),
           cnt: 1
         }
       }
     }
+    taskTimeTmp = taskTime;
 
     //表示更新
     //残りタスクを更新
@@ -150,10 +211,12 @@ $(function() {
     $('#tc-hour').text((taskTime / 60).toFixed(1) + " h");
     //完了予定を更新
     var date = new Date();
+    tcCurrentDate = new Date(date.getTime());
     //開始時刻の入力があればdateを更新
     if ($("#begintime").val() != "" && $('#chbegintime').prop('checked')) {
       date = new Date(date.toDateString() + ' ' + $("#begintime").val());
     }
+    tcStartDate = new Date(date.getTime());
     //休憩時間の入力があれば加算
     if ($("#breaktime").val() != "" && $('#chbreaktime').prop('checked')) {
       var brhours = $('#breaktime').val().slice(0, 2);
@@ -167,13 +230,13 @@ $(function() {
     var ndate = new Date();
     var ddiff = getDiff(ndate.toDateString(), date.toDateString());
     $('#tc-endtime').text((date.getHours() + ddiff * 24) + ':' + ('0' + date.getMinutes()).slice(-2));
-    //プロジェクトバーを更新
+    //タスクバーを更新
     //初期化
-    $('#tc-projectbar').empty();
-    if (prjbar.length > 0) {
-      //プロジェクトカラーが存在する場合
-      //プロジェクトバー表示
-      $('#tc-projectbar').css('display', '');
+    $('#tc-taskbar').empty();
+    if (tc_taskbar == "true" && taskbar.length > 0) {
+      //プロジェクトが存在する場合
+      //タスクバー表示
+      $('#tc-taskbar').css('display', '');
       $('#tc-tasknum').css({
         'border-bottom-left-radius': '0',
         '-moz-border-bottom-left-radius': '0',
@@ -189,22 +252,58 @@ $(function() {
         '-ms-border-bottom-right-radius': '0'
       });
 
-      var n = 0.00;
-      for (i = 0; i < prjbar.length; i++) {
-        $('#tc-projectbar').append($("<div></div>"));
+      var taskbarmode = "time";
+      var n = 0;
+      var maxtime = 0;
+      var maxtimeid = "";
+      var taskbarwidth = $('#tc-taskbar').width();
+      for (i = 0; i < taskbar.length; i++) {
+        if (taskbarmode == "time") {
+          var taskcnt = taskbar[i].time;
+          var taskcntsum = taskTimeTmp;
+        } else if (taskbarmode == "count") {
+          var taskcnt = taskbar[i].cnt;
+          var taskcntsum = taskList.length;
+        }
+
+        if (taskcnt == 0) continue;
+
+        //そのタスクの完了時刻を時間計算
+        tcStartDate.setMinutes(tcStartDate.getMinutes() + taskbar[i].time);
+        //日をまたぐ数を計算
+        ddiff = getDiff(ndate.toDateString(), tcStartDate.toDateString());
+        var taskfintime = (tcStartDate.getHours() + ddiff * 24) + ':' + ('0' + tcStartDate.getMinutes()).slice(-2);
+
+        $('#tc-taskbar').append($('<div class="task" data-target="' + taskbar[i].id + '"><div class="taskbar"></div><p class="taskpopup"><span class="taskbar-tasktext">' + taskbar[i].tasktext + '</span> <span class="taskbar-tasktime">' + taskbar[i].time + 'm</span> <span class="taskbar-taskfintime">' + taskfintime + '</span><br /><span class="taskbar-prjname">≪ ' + taskbar[i].name + '</span></p></div>'));
         //barのwidthを指定
-        $('#tc-projectbar div:last').css('width', (Math.floor(prjbar[i].cnt / taskList.length * 100 * 1000) / 1000) + '%');
-        //最後のbarのwidthは合計100%になるように指定
-        if (i == prjbar.length - 1) $('#tc-projectbar div:last').css('width', (100.00 - n) + '%');
-        //背景色をプロジェクトカラーに指定
-        $('#tc-projectbar div:last').css('background-color', prjbar[i].color);
+        $('#tc-taskbar .task:last').css('width', Math.round(taskbarwidth * taskcnt / taskcntsum));
+
+        //背景色をプロジェクトのカラーに指定
+        $('#tc-taskbar div .taskbar:last').css('background-color', taskbar[i].color);
+
+        if (maxtime < taskbar[i].time) {
+          maxtime = taskbar[i].time;
+          maxtimeid = taskbar[i].id;
+        }
         //widthの合計を記録
-        n += (Math.floor(prjbar[i].cnt / taskList.length * 100 * 1000) / 1000);
+        n += $('#tc-taskbar .task:last').width();
       }
+      //最も時間の長いタスクでwidthを調整
+      $('#tc-taskbar .task[data-target="' + maxtimeid + '"]').css('width', $('#tc-taskbar .task[data-target="' + maxtimeid + '"]').width()  + taskbarwidth - n);
+
+      $('#tc-taskbar .taskpopup').each(function() {
+        //右端がはみ出していたらその分左にずらす
+        $(this).css('display', 'block');
+        var p = $(this).offset().left + $(this).outerWidth() - ($(window).scrollLeft() + $(window).width()) + 4;
+        if ( p > 0 ) $(this).css('margin-left', -p + "px");
+        p = $(this).offset().left - $(window).scrollLeft() - 4;
+        if ( p < 0 ) $(this).css('margin-right', p + "px");
+        $(this).css('display', '');
+      });
     } else {
-      //プロジェクトカラーが存在しない場合（プロジェクトのページなど）
-      //プロジェクトバー非表示
-      $('#tc-projectbar').css('display', 'none');
+      //プロジェクトが存在しない場合（プロジェクトのページなど）
+      //タスクバー非表示
+      $('#tc-taskbar').css('display', 'none');
       $('#tc-tasknum').css({
         'border-bottom-left-radius': '4px',
         '-moz-border-bottom-left-radius': '4px',
@@ -332,4 +431,5 @@ $(function() {
     //Dateにして返す
     return new Date(str);
   };
+
 });

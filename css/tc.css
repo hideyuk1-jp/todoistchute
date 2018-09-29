@@ -2,7 +2,7 @@
 
 #tc-wrapper {
   vertical-align: top;
-  font-size: .9em;
+  font-size: .75rem;
   padding: 74px 25px 0 30px;
   margin-bottom: -56px;
   display: grid;
@@ -16,7 +16,7 @@
 }
 
 #tc-wrapper .tc-item h2 {
-  font-size: 1em;
+  font-size: .7rem;
   margin: 0;
   font-weight: normal;
   border-bottom: solid 1px #ddd
@@ -72,12 +72,12 @@
   margin-bottom: 8px
 }
 
-#tc-wrapper #tc-projectbar {
+#tc-wrapper #tc-taskbar {
   grid-row: 3;
   grid-column: 1/4;
   border: 0;
   font-size: 0;
-  overflow: hidden;
+  overflow: inherit;
   border-bottom-left-radius: 4px;
   -moz-border-bottom-left-radius: 4px;
   -webkit-border-bottom-left-radius: 4px;
@@ -89,15 +89,65 @@
   -ms-border-bottom-right-radius: 4px
 }
 
-#tc-wrapper #tc-projectbar>div {
+#tc-wrapper #tc-taskbar .task {
+  position: relative;
+  box-sizing: border-box;
   display: inline-block;
-  height: 9px;
+  height: 10px;
+}
+
+#tc-wrapper #tc-taskbar .taskbar {
+  display: block;
+  box-sizing: border-box;
+  border-left: 1px solid #ddd;
+  height: 10px;
   padding: 0;
   margin: 0
 }
 
+#tc-wrapper #tc-taskbar .task:first-child>.taskbar {
+  border-left: 0;
+  border-bottom-left-radius: 4px;
+  -moz-border-bottom-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
+}
+
+#tc-wrapper #tc-taskbar .task:last-child>.taskbar {
+  border-bottom-right-radius: 4px;
+  -moz-border-bottom-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
+}
+
+#tc-wrapper #tc-taskbar>div .taskpopup {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  max-width: 320px;
+  font-size: .75rem;
+  color: #202020;
+  padding: 8px;
+  width: max-content;
+  background-color: #fff;
+  margin: 14px 0 0 0;
+  box-shadow: 0 1px 8px 0 rgba(0,0,0,0.08), 0 0 1px 0 rgba(0,0,0,0.3);
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+
+#tc-wrapper #tc-taskbar .taskbar:hover + p.taskpopup {
+  display: block;
+}
+
 #tc-wrapper #tc-cnt, #tc-wrapper #tc-endtime, #tc-wrapper #tc-hour {
-  font-size: 1.4em;
+  font-size: 1rem;
   font-weight: bold;
   font-family: Hervetica
 }
@@ -108,4 +158,12 @@
 
 .tc-counted {
   color: #0082c5
+}
+
+#tc-taskbar .taskbar-tasktext {
+  font-weight: bold
+}
+
+#tc-taskbar .taskbar-prjname {
+  color: #999
 }
