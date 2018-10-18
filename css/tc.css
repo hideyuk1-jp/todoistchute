@@ -98,6 +98,7 @@
 
 #tc-wrapper #tc-taskbar .taskbar {
   display: block;
+  opacity: 1.0;
   box-sizing: border-box;
   border-left: 1px solid #ddd;
   height: 10px;
@@ -140,6 +141,10 @@
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   -o-border-radius: 4px;
+}
+
+#tc-wrapper #tc-taskbar .taskbar:hover {
+  opacity: 0.5;
 }
 
 #tc-wrapper #tc-taskbar .taskbar:hover + p.taskpopup {
