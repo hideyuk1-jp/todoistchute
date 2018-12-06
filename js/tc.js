@@ -39,7 +39,7 @@ $(function() {
       if (brtime) options.tc_breaktime = Math.round((parseFloat(brtime[1]) + parseFloat(brtime[2]) / 60)*100)/100;
 
       //挿入される要素
-      tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>' + chrome.i18n.getMessage("remainedTaskName") + '</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>' + chrome.i18n.getMessage("totalTimeName") + '</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>' + chrome.i18n.getMessage("finishTimeName") + '</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> ' + chrome.i18n.getMessage("dateSelectName") + ': <select id="tc-date"><option value="ALL">' + strall + '</option></select>　' + chrome.i18n.getMessage("startTimeName") + ': <input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　' + chrome.i18n.getMessage("breakTimeName") + ': <input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="number" step="0.01" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /> h</div><div id="tc-taskbar"></div></div>';
+      tchtml = '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>' + chrome.i18n.getMessage("remainedTaskName") + '</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>' + chrome.i18n.getMessage("totalTimeName") + '</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>' + chrome.i18n.getMessage("finishTimeName") + '</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> ' + chrome.i18n.getMessage("dateSelectName") + ': <select id="tc-date"><option value="ALL">' + strall + '</option></select>　' + chrome.i18n.getMessage("startTimeName") + ': <input type="checkbox" name="chbegintime" id="chbegintime" /><input type="time" name="begintime" id="begintime" value="' + options.tc_begintime + '" disabled />　' + chrome.i18n.getMessage("breakTimeName") + ': <input type="checkbox" name="chbreaktime" id="chbreaktime" /><input type="number" step="0.01" name="breaktime" id="breaktime" value="' + options.tc_breaktime + '" disabled /> h</div><div id="tc-taskbar" style="display:flex"></div></div>';
 
       //フラグがtrueであればリンクアイコンのcssを挿入
       if (options.tc_linkicon == "true") $('head').append('<style type="text/css"><!-- .sel_item_content a.ex_link:after {margin: 0 3px;font-family: FontAwesome;content: "\\f08e";font-size: 100%;} --></style>');
@@ -205,7 +205,7 @@ $(function() {
       ddiff = getDiff(ndate.toDateString(), tcStartDate.toDateString());
       var taskfintime = (tcStartDate.getHours() + ddiff * 24) + ':' + ('0' + tcStartDate.getMinutes()).slice(-2);
 
-      taskbarhtml += '<div class="task" style="width:calc(100%*' + taskTimeTmp + '/<<REPLACE-totaltime-REPLACE>>)" data-target="' + $(taskList[i]).attr('id') + '"><div class="taskbar" style="background-color:' + prjcolorTmp + '"></div><p class="taskpopup"><span class="taskbar-tasktext">' + taskText + '</span> <span class="taskbar-tasktime">' + taskTimeTmp + 'm</span> <span class="taskbar-taskfintime">' + taskfintime + '</span><br /><span class="taskbar-prjname">≪ ' + prjnameTmp + '</span></p></div>';
+      taskbarhtml += '<div class="task" style="flex:' + taskTimeTmp + '" data-target="' + $(taskList[i]).attr('id') + '"><div class="taskbar" style="background-color:' + prjcolorTmp + '"></div><p class="taskpopup"><span class="taskbar-tasktext">' + taskText + '</span> <span class="taskbar-tasktime">' + taskTimeTmp + 'm</span> <span class="taskbar-taskfintime">' + taskfintime + '</span><br /><span class="taskbar-prjname">≪ ' + prjnameTmp + '</span></p></div>';
     }
     taskTimeTmp = taskTime;
 
@@ -244,7 +244,7 @@ $(function() {
     if (tc_taskbar == "true" && taskbarhtml != '') {
       //プロジェクトが存在する場合
       //タスクバー表示
-      $('#tc-taskbar').css('display', '');
+      $('#tc-taskbar').css('display', 'flex');
       $('#tc-tasknum').css({
         'border-bottom-left-radius': '0',
         '-moz-border-bottom-left-radius': '0',
@@ -261,7 +261,6 @@ $(function() {
       });
 
       //合計時間を置換して、タスクバー表示
-      taskbarhtml = taskbarhtml.replace(/<<REPLACE-totaltime-REPLACE>>/g, taskTimeTmp);
       $('#tc-taskbar').append(taskbarhtml);
 
     } else {
