@@ -32,7 +32,9 @@
   -o-border-radius: 4px;
   -ms-border-radius: 4px
 }
-
+#breaktime {
+  width: 48px;
+}
 #tc-wrapper .tc-item h2, #tc-wrapper .tc-item div {
   margin: 0;
   padding: 4px
@@ -154,11 +156,7 @@
 #tc-wrapper #tc-cnt, #tc-wrapper #tc-endtime, #tc-wrapper #tc-hour {
   font-size: 1rem;
   font-weight: bold;
-  font-family: Hervetica
-}
-
-#tc-wrapper select, #tc-wrapper option, #tc-wrapper input {
-  font-size: inherit
+  /*font-family: Hervetica*/
 }
 
 .tc-counted {
@@ -171,4 +169,8 @@
 
 #tc-taskbar .taskbar-prjname {
   color: #999
+}
+
+#tc-wrapper input, #tc-wrapper option, #tc-wrapper textarea, #tc-wrapper select, #tc-wrapper button {
+    font: inherit;
 }

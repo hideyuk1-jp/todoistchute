@@ -1,8 +1,18 @@
 $(function(){
+  //置き換え
+  $('[data-i18n]').each(function() {
+    var t = $(this);
+    if (t.prop("tagName") == "INPUT") {
+      t.val(chrome.i18n.getMessage(t.data('i18n')));
+    } else {
+      t.text(chrome.i18n.getMessage(t.data('i18n')));
+    }
+  });
+
   var tc_options = {
     tc_countMode: "auto",
     tc_begintime: "09:00",
-    tc_breaktime: "01:00",
+    tc_breaktime: "1",
     tc_linkicon: "false",
     tc_taskbar: "true"
   };
@@ -29,6 +39,10 @@ $(function(){
   chrome.storage.sync.get(
     tc_options,
     function(options) {
+      //休憩時間がhh:mm形式の場合
+      var brtime = options.tc_breaktime.match(/^(0?[0-9]|1[0-9]|2[0-4]):(0?[0-9]|[1-5][0-9])$/);
+      if (brtime) options.tc_breaktime = Math.round((parseFloat(brtime[1]) + parseFloat(brtime[2]) / 60)*100)/100;
+
       if (options.tc_countMode) $('input[name=countMode]').val([options.tc_countMode]);
       if (options.tc_begintime) $('input[name=begintime]').val([options.tc_begintime]);
       if (options.tc_breaktime) $('input[name=breaktime]').val([options.tc_breaktime]);

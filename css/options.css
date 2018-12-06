@@ -20,3 +20,11 @@ dt {
 dd {
   margin-left: 10px;
 }
+
+#breaktime {
+  width: 48px;
+}
+
+input, textarea, select, button {
+    font: inherit;
+}

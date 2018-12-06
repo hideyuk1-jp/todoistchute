@@ -1,0 +1,77 @@
+{
+  "extName": {
+    "message": "TodoistChute: Todoistに完了予定時刻を表示"
+  },
+  "extDescription": {
+    "message": "Todoistのタスクに設定した見積時間を計算して、完了予定時刻を表示します。"
+  },
+  "allDate": {
+    "message": "指定しない"
+  },
+  "dateSelectName": {
+    "message": "日付"
+  },
+  "startTimeName": {
+    "message": "開始時刻"
+  },
+  "breakTimeName": {
+    "message": "休憩時間"
+  },
+  "remainedTaskName": {
+    "message": "残りタスク"
+  },
+  "totalTimeName": {
+    "message": "見積時間"
+  },
+  "finishTimeName": {
+    "message": "完了予定"
+  },
+  "tcSettingTitle": {
+    "message": "TodoistChuteの設定"
+  },
+  "tcSettingGeneral": {
+    "message": "全般"
+  },
+  "tcSettingOther": {
+    "message": "その他"
+  },
+  "tcSettingCalculationModeName": {
+    "message": "タスク集計方法"
+  },
+  "tcSettingCalculationModeAuto": {
+    "message": "自動選択"
+  },
+  "tcSettingCalculationModeLabel": {
+    "message": "ラベルから集計（有料プラン向け）"
+  },
+  "tcSettingCalculationModeText": {
+    "message": "タスクテキストから集計（無料プラン向け）"
+  },
+  "tcSettingCalculationModeExplain1": {
+    "message": "自動選択を選択するとラベル（見積時間と関係のないものを含む）の存在によって集計方法が変わります。"
+  },
+  "tcSettingCalculationModeExplain2": {
+    "message": "ラベルが存在する場合はラベルに入力された見積時間から集計を行い、ラベルが存在しない場合はタスクテキストに入力された見積時間から集計を行います。"
+  },
+  "tcSettingDefaultStartTimeName": {
+    "message": "開始時刻の初期値"
+  },
+  "tcSettingDefaultBreakTimeName": {
+    "message": "休憩時間の初期値"
+  },
+  "tcSettingTaskbarName": {
+    "message": "タスクバー"
+  },
+  "tcSettingShow": {
+    "message": "表示する"
+  },
+  "tcSettingLinkInTaskName": {
+    "message": "タスク内リンク"
+  },
+  "tcSettingLinkInTaskValue": {
+    "message": "アイコンを挿入して目立たせる"
+  },
+  "tcSettingSave": {
+    "message": "保存"
+  }
+}

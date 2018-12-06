@@ -1,0 +1,77 @@
+{
+  "extName": {
+    "message": "TodoistChute: Finish Time for Todoist"
+  },
+  "extDescription": {
+    "message": "TodoistChute calculates estimated time set for task of Todoist, and shows finish time."
+  },
+  "allDate": {
+    "message": "All"
+  },
+  "dateSelectName": {
+    "message": "Date"
+  },
+  "startTimeName": {
+    "message": "Start"
+  },
+  "breakTimeName": {
+    "message": "Break"
+  },
+  "remainedTaskName": {
+    "message": "Task"
+  },
+  "totalTimeName": {
+    "message": "Time"
+  },
+  "finishTimeName": {
+    "message": "Finish"
+  },
+  "tcSettingTitle": {
+    "message": "TodoistChute Setting"
+  },
+  "tcSettingGeneral": {
+    "message": "General"
+  },
+  "tcSettingOther": {
+    "message": "Other"
+  },
+  "tcSettingCalculationModeName": {
+    "message": "Calculation Mode"
+  },
+  "tcSettingCalculationModeAuto": {
+    "message": "Auto"
+  },
+  "tcSettingCalculationModeLabel": {
+    "message": "Label"
+  },
+  "tcSettingCalculationModeText": {
+    "message": "Text"
+  },
+  "tcSettingCalculationModeExplain1": {
+    "message": "If you select \"Auto\", calculation method will change depending on existence of labels (including those not related to estimated time)."
+  },
+  "tcSettingCalculationModeExplain2": {
+    "message":"If label exists, estimated time entered in label will be counted. If label does not exist, estimated time entered in task text is counted."
+  },
+  "tcSettingDefaultStartTimeName": {
+    "message": "Default Starttime"
+  },
+  "tcSettingDefaultBreakTimeName": {
+    "message": "Default Breaktime"
+  },
+  "tcSettingTaskbarName": {
+    "message": "Task bar"
+  },
+  "tcSettingShow": {
+    "message": "Show"
+  },
+  "tcSettingLinkInTaskName": {
+    "message": "Link in Task"
+  },
+  "tcSettingLinkInTaskValue": {
+    "message": "Stand out link in task, using icon."
+  },
+  "tcSettingSave": {
+    "message": "Save"
+  }
+}
