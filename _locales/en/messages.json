@@ -3,7 +3,7 @@
     "message": "TodoistChute: Finish Time for Todoist"
   },
   "extDescription": {
-    "message": "TodoistChute calculates estimated time set for task of Todoist, and shows finish time."
+    "message": "TodoistChute calculates the estimated time required to every tasks on Todoist, and shows the finish time."
   },
   "allDate": {
     "message": "All"
@@ -27,7 +27,7 @@
     "message": "Finish"
   },
   "tcSettingTitle": {
-    "message": "TodoistChute Setting"
+    "message": "TodoistChute Options"
   },
   "tcSettingGeneral": {
     "message": "General"

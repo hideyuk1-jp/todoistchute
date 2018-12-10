@@ -94,12 +94,10 @@
 #tc-wrapper #tc-taskbar .task {
   position: relative;
   box-sizing: border-box;
-  display: inline-block;
   height: 10px;
 }
 
 #tc-wrapper #tc-taskbar .taskbar {
-  display: block;
   opacity: 1.0;
   box-sizing: border-box;
   border-left: 1px solid #ddd;

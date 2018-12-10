@@ -306,9 +306,6 @@ $(function() {
     //現在選択中の日付を退避
     tcDateVal = $('#tc-date').val();
 
-    //日付リストにfocusがある場合は終了
-    if ($('#tc-date').is(':focus')) return false;
-
     //初期化
     mode7days = false;
     $('#tc-date').empty();

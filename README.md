@@ -1,47 +1,50 @@
-# TodoistChute
+# TodoistChute: Finish Time for Todoist
 
-Todoistのタスクに設定した見積時間を集計して完了予定時刻を表示します。
+*Read this in other languages: [English](README.md), [日本語](README.ja.md).*
 
-![](ss/01.jpg)
+TodoistChute calculates the estimated time required to every tasks on Todoist, and shows the finish time.
 
-## インストール
+![](ss/en01.jpg)
 
-Chrome ウェブストアからインストールしてください。
+## Installation
 
-[TodoistChute \- Chrome ウェブストア](https://chrome.google.com/webstore/detail/todoistchute/ghllkaandaghmnhgldofdmollpjlefmj)
+Install the extension via Chrome webstore.
 
-## 特徴
+[TodoistChute: Finish Time for Todoist \- Chrome Web Store](https://chrome.google.com/webstore/detail/todoistchute-finish-time/ghllkaandaghmnhgldofdmollpjlefmj)
 
-* タスク毎に見積時間を設定すれば完了予定時刻を自動計算して表示
-* 日付の絞り込みや、開始時刻や休憩時間を設定可能
+## Features
 
-## 使い方
+* By setting the estimated time for each task, the estimated finish time is automatically calculated and displayed.
+* You can narrow down the date.
+* You can set the start time and the break time.
 
-タスクに見積時間を設定すれば、タスクリストの上部に完了予定時刻などが表示されます。
+## How to use
 
-### タスクに見積時間を設定する方法
+### Set the estimated time for task
 
-Todoistのプランに応じて、タスク毎にラベルまたはテキストに見積時間を設定します。
+Depending on Todoist's plan, set the estimate time for label or text for task.
 
-初期状態の集計方法では、ページ内のラベルの有無を確認して、ラベルから集計するかテキストから集計するか自動で判定します。
+In the initial state, Todoistchute checks the presence of labels in the page and calculates automatically from label or text.
 
-#### 方法1. ラベルに設定（Todoist有料プラン向け）
+#### 1. Label (for paid plan)
 
-Todoistのタスクに「//分数」のラベルを作成します。
+Enter the estimated time to the label in task in minutes as "//60".
 
-![](ss/02.jpg)
+![](ss/en01.jpg)
 
-#### 方法2. テキストに設定（Todoist無料プラン向け）
+#### 2. Text（for free plan）
 
-Todoistのタスクのテキスト内に「//分数」と入力します。
+Enter the estimated time to the text in task in minutes as "//60".
 
-![](ss/03.jpg)
+![](ss/en03.jpg)
 
-### オプション画面で設定変更（お好みで）
+### Options
 
-[chrome://extensions/](chrome://extensions/)からオプション画面を開いて必要に応じて設定を変更します。
+You can change the settings as necessary.
 
-![](ss/04.jpg)
+[chrome://extensions/](chrome://extensions/)
+
+![](ss/en04.jpg)
 
 ## License
 
