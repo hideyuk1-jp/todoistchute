@@ -2,7 +2,7 @@
 
 *Read this in other languages: [English](README.md), [日本語](README.ja.md).*
 
-TodoistChute calculates the estimated time required to every tasks on Todoist, and shows the finish time.
+TodoistChute calculates the estimated time set for every task on Todoist and shows the finish time.
 
 ![](ss/en01.jpg)
 
@@ -20,27 +20,27 @@ Install the extension via Chrome webstore.
 
 ## How to use
 
-### Set the estimated time for task
+### Set the estimated time for a task
 
-Depending on Todoist's plan, set the estimate time for label or text for task.
+Depending on Todoist's plan, set the estimated time for label or text for a task.
 
-In the initial state, Todoistchute checks the presence of labels in the page and calculates automatically from label or text.
+In the initial state, TodoistChute checks the presence of labels on the page and calculates automatically from label or text.
 
-#### 1. Label (for paid plan)
+#### 1. Label (for Todoist premium plan)
 
-Enter the estimated time to the label in task in minutes as "//60".
+Enter the estimated time to the label in a task in minutes as "//60".
 
 ![](ss/en01.jpg)
 
-#### 2. Text（for free plan）
+#### 2. Text（for Todoist free plan）
 
-Enter the estimated time to the text in task in minutes as "//60".
+Enter the estimated time to the text in a task in minutes as "//60".
 
 ![](ss/en03.jpg)
 
 ### Options
 
-You can change the settings as necessary.
+You can change the settings as necessary.
 
 [chrome://extensions/](chrome://extensions/)
 
