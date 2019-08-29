@@ -48,10 +48,11 @@ $(function() {
 
       //タスクや幅に変更があれば時間計算を実行
       var check = function(tc_countMode) {
+        curTaskContent = $('#editor').html();
         //タスクアイテムが変わったら時間計測を実行
-        if (taskContent != $('#content').find('.section_header, .subsection_header, .task_item').text()) {
+        if (taskContent != curTaskContent) {
           calcTime(tc_countMode);
-          taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
+          taskContent = curTaskContent;
           tcWidth = $('#tc-wrapper').width();
           return true;
         }
@@ -59,7 +60,7 @@ $(function() {
         //widthが変わったら時間計測を実行
         if (tcWidth != $('#tc-wrapper').width()) {
           calcTime(tc_countMode);
-          taskContent = $('#content').find('.section_header, .subsection_header, .task_item').text();
+          taskContent = curTaskContent;
           tcWidth = $('#tc-wrapper').width();
           return true;
         }
@@ -73,6 +74,7 @@ $(function() {
           return true;
         }
       };
+
       //1秒おきに時間計算を実行
       setInterval(function(){check(options.tc_countMode)}, 1000);
 
@@ -284,7 +286,7 @@ $(function() {
     }
 
     calcEndTime = new Date();
-    console.log("Total: " + (calcEndTime.getTime() - calcStartTime.getTime()) + "ms (Calc: " + (calcPreDisplayTime.getTime() - calcStartTime.getTime()) + "ms) (Display: " + (calcPreTaskbarTime.getTime() - calcPreDisplayTime.getTime()) + "ms) (Taskbar: " + (calcEndTime.getTime() - calcPreTaskbarTime.getTime()) + "ms)");
+    //console.log("Total: " + (calcEndTime.getTime() - calcStartTime.getTime()) + "ms (Calc: " + (calcPreDisplayTime.getTime() - calcStartTime.getTime()) + "ms) (Display: " + (calcPreTaskbarTime.getTime() - calcPreDisplayTime.getTime()) + "ms) (Taskbar: " + (calcEndTime.getTime() - calcPreTaskbarTime.getTime()) + "ms)");
   };
 
   //TodoistChute挿入
