@@ -127,7 +127,7 @@ $(function() {
     if (!($('#tc-wrapper').length)) tcInsert();
 
     //集計方法が自動選択の場合はラベルの有無で見積時間の集計方法変更
-    if (countMode == 'auto') countMode = ($('.labels_holder').length) ? 'label' : 'text';
+    if (countMode == 'auto') countMode = ($('.label').length) ? 'label' : 'text';
 
     //日付リスト作成
     getDateList();
@@ -135,7 +135,7 @@ $(function() {
 
     //タスクリストの取得
     taskList = $('#content').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
-    if (mode7days == 1 && tcDateVal != 'ALL') {
+    if (mode7days && tcDateVal != 'ALL') {
       //次の7日間で日付指定の場合
       taskList = $('#content').find(".subsection_header > a:contains('" + tcDateVal + "')").closest('div').next('ul').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
     } else if (tcDateVal != 'ALL') {
@@ -166,7 +166,7 @@ $(function() {
           if ($.isNumeric(labelTmp)) taskTimeTmp += parseInt(labelTmp);
         }
       } else if (countMode == 'text') { //タスクテキストから集計
-        $(taskList[i]).find('.sel_item_content').contents().each(function(index, element) {
+        $(taskList[i]).find('.task_item_content_text').contents().each(function(index, element) {
           if (this.nodeType == 3) {
             regexp = new RegExp(timePrefix.replace(/[\\^$.*+?()[\]{}|/]/g, '\\$&') + '\(\\d+\)', 'g');
             textList = $(this).text().match(regexp);
