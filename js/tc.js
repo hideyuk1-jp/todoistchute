@@ -136,12 +136,18 @@ $(function() {
     var tcDateVal = $('#tc-date').val();
 
     // タスクリストの取得
-    taskList = $('#content').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
-    if (modeSectionDays && tcDateVal != 'ALL') {
+    if (tcDateVal == 'ALL') {
+      taskList = $('#content').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
+    }else if (modeSectionDays) {
       taskList = $('#content').find(".subsection_header > a:contains('" + tcDateVal + "')").closest('div').next('ul').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
-    } else if (tcDateVal != 'ALL') {
+      if (!taskList.length) {
+        taskList = $('#content').find(".section_header > a:contains('" + tcDateVal + "')").closest('div').next('ul').find('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
+      }
+    } else {
       taskList = $('#content').find(".date:contains('" + tcDateVal + "')" + ".date:not(:contains('1" + tcDateVal + "'))").closest('.task_item:not(.checked,.history_item,.reorder_item)' + '.task_item:has(.checker)');
     }
+    // console.log('modeSecDays: ' + modeSectionDays);
+    // console.log('tcDateVal: ' + tcDateVal);
     // console.log(taskList[0]);
 
     // dateの準備
