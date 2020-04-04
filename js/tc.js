@@ -4,7 +4,7 @@
  * License: MIT
  */
 $(function () {
-  debugMode = true; // ログ出力
+  debugMode = false; // ログ出力
 
   var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
   var timePrefix = "//"; // 見積時間の接頭辞
@@ -204,6 +204,7 @@ $(function () {
     // 日付リスト作成
     showDateList();
     var tcDateVal = $("#tc-date").val();
+    if (debugMode) console.log("tcDateVal: ", tcDateVal);
 
     // タスクリストの取得
     if (tcDateVal == "ALL") {
@@ -230,6 +231,24 @@ $(function () {
               ".task_item:has(.checker)"
           );
       }
+      if (!taskList.length) {
+        taskList = $(tcParentId)
+          .find(".subsection_header:contains('" + tcDateVal + "')")
+          .next("ul")
+          .find(
+            ".task_item:not(.checked,.history_item,.reorder_item)" +
+              ".task_item:has(.checker)"
+          );
+      }
+      if (!taskList.length) {
+        taskList = $(tcParentId)
+          .find(".section_header:contains('" + tcDateVal + "')")
+          .next("ul")
+          .find(
+            ".task_item:not(.checked,.history_item,.reorder_item)" +
+              ".task_item:has(.checker)"
+          );
+      }
     } else {
       taskList = $(tcParentId)
         .find(
@@ -245,9 +264,7 @@ $(function () {
             ".task_item:has(.checker)"
         );
     }
-    // console.log('modeSecDays: ' + modeSectionDays);
-    // console.log('tcDateVal: ' + tcDateVal);
-    // console.log(taskList[0]);
+    if (debugMode) console.log("taskList: ", taskList);
 
     // dateの準備
     var date = new Date();
@@ -302,14 +319,7 @@ $(function () {
       if (tc_taskbar != "true") continue;
 
       // タスクテキスト取得
-      taskText = "";
-      $(taskList[i])
-        .find(".sel_item_content")
-        .contents()
-        .each(function () {
-          if ($(this).hasClass("note_icon")) return false;
-          taskText += $(this).text();
-        });
+      taskText = $(taskList[i]).find(".task_item_content_text").text();
 
       // プロジェクトの名前とカラー取得
       prjnameTmp = $(taskList[i]).find(".project_item__name").text();
@@ -453,7 +463,7 @@ $(function () {
   function showDateList() {
     var i, tcDateVal;
 
-    // 現在選択中の日付を退避
+    // 現在選択中の日付を取得
     tcDateVal = $("#tc-date").val();
 
     // 初期化
@@ -462,10 +472,11 @@ $(function () {
 
     // セクションごとの日付か判定
     modeSectionDays = isSectionDays();
-    // console.log('modeSectionDays: ' + modeSectionDays);
+    if (debugMode) console.log("modeSectionDays: ", modeSectionDays);
 
     // 日付リストの取得
     dateList = getDateList();
+    if (debugMode) console.log("dateList: ", dateList);
 
     // 日付リストからドロップダウンリストに挿入
     len = dateList.length;
@@ -476,8 +487,6 @@ $(function () {
         .text()
         .replace(/\d\d:\d\d/g, "")
         .trim();
-      // 次の7日間の場合は今日とか曜日の部分に変更
-      if (modeSectionDays) dVal = $(dateList[i]).prev("a").text();
       // ドロップダウンリストにない日付の場合は挿入
       reg = new RegExp('<option value="' + dVal + '">');
       if (dVal != "" && !dvalhtml.match(reg))
@@ -506,13 +515,17 @@ $(function () {
 
   //  セクションごとの日付かどうかを判定
   function isSectionDays() {
-    // .subsection_header__dateがある
-    return $(".subsection_header__date").length > 0;
+    // .section_dayが複数ある
+    return $(".section_day").length > 1 || $(".section_overdue").length > 0;
   }
 
   function getDateList() {
     if (modeSectionDays) {
-      return $(".subsection_header__date");
+      var overdueElem = $(".section_overdue .subsection_header");
+      overdueElem.children().empty();
+      return $(".subsection_header > a:not(.section_overdue a)").add(
+        overdueElem
+      );
     } else {
       return $(tcParentId)
         .find(
@@ -552,6 +565,12 @@ $(function () {
       return date;
     }
     if (str == "昨日" || str == "Yesterday") {
+      date.setDate(date.getDate() - 1);
+      return date;
+    }
+
+    // 期限切れの場合は前日
+    if (str == "期限切れ" || str == "Overdue") {
       date.setDate(date.getDate() - 1);
       return date;
     }
