@@ -207,63 +207,7 @@ $(function () {
     if (debugMode) console.log("tcDateVal: ", tcDateVal);
 
     // タスクリストの取得
-    if (tcDateVal == "ALL") {
-      taskList = $(tcParentId).find(
-        ".task_item:not(.checked,.history_item,.reorder_item)" +
-          ".task_item:has(.checker)"
-      );
-    } else if (modeSectionDays) {
-      taskList = $(tcParentId)
-        .find(".subsection_header > a:contains('" + tcDateVal + "')")
-        .closest("div")
-        .next("ul")
-        .find(
-          ".task_item:not(.checked,.history_item,.reorder_item)" +
-            ".task_item:has(.checker)"
-        );
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".section_header > a:contains('" + tcDateVal + "')")
-          .closest("div")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".subsection_header:contains('" + tcDateVal + "')")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".section_header:contains('" + tcDateVal + "')")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-    } else {
-      taskList = $(tcParentId)
-        .find(
-          ".date:contains('" +
-            tcDateVal +
-            "')" +
-            ".date:not(:contains('1" +
-            tcDateVal +
-            "'))"
-        )
-        .closest(
-          ".task_item:not(.checked,.history_item,.reorder_item)" +
-            ".task_item:has(.checker)"
-        );
-    }
+    taskList = getTaskList(tcDateVal);
     if (debugMode) console.log("taskList: ", taskList);
 
     // dateの準備
@@ -445,7 +389,19 @@ $(function () {
     }
 
     calcEndTime = new Date();
-    // console.log("Total: " + (calcEndTime.getTime() - calcStartTime.getTime()) + "ms (Calc: " + (calcPreDisplayTime.getTime() - calcStartTime.getTime()) + "ms) (Display: " + (calcPreTaskbarTime.getTime() - calcPreDisplayTime.getTime()) + "ms) (Taskbar: " + (calcEndTime.getTime() - calcPreTaskbarTime.getTime()) + "ms)");
+    if (debugMode)
+      console.log(
+        "Total: " +
+          calcEndTime.getTime() -
+          calcStartTime.getTime() +
+          "ms (Calc: " +
+          (calcPreDisplayTime.getTime() - calcStartTime.getTime()) +
+          "ms) (Display: " +
+          (calcPreTaskbarTime.getTime() - calcPreDisplayTime.getTime()) +
+          "ms) (Taskbar: " +
+          (calcEndTime.getTime() - calcPreTaskbarTime.getTime()) +
+          "ms)"
+      );
   }
 
   // TodoistChute挿入
@@ -454,6 +410,70 @@ $(function () {
     $("#tc-wrapper").remove();
     // html挿入
     $(tcParentId).prepend(tchtml);
+  }
+
+  // タスクリストの取得
+  function getTaskList(tcDateVal) {
+    var taskList;
+    if (tcDateVal == "ALL") {
+      taskList = $(tcParentId).find(
+        ".task_item:not(.checked,.history_item,.reorder_item)" +
+          ".task_item:has(.checker)"
+      );
+    } else if (modeSectionDays) {
+      taskList = $(tcParentId)
+        .find(".subsection_header > a:contains('" + tcDateVal + "')")
+        .closest("div")
+        .next("ul")
+        .find(
+          ".task_item:not(.checked,.history_item,.reorder_item)" +
+            ".task_item:has(.checker)"
+        );
+      if (!taskList.length) {
+        taskList = $(tcParentId)
+          .find(".section_header > a:contains('" + tcDateVal + "')")
+          .closest("div")
+          .next("ul")
+          .find(
+            ".task_item:not(.checked,.history_item,.reorder_item)" +
+              ".task_item:has(.checker)"
+          );
+      }
+      if (!taskList.length) {
+        taskList = $(tcParentId)
+          .find(".subsection_header:contains('" + tcDateVal + "')")
+          .next("ul")
+          .find(
+            ".task_item:not(.checked,.history_item,.reorder_item)" +
+              ".task_item:has(.checker)"
+          );
+      }
+      if (!taskList.length) {
+        taskList = $(tcParentId)
+          .find(".section_header:contains('" + tcDateVal + "')")
+          .next("ul")
+          .find(
+            ".task_item:not(.checked,.history_item,.reorder_item)" +
+              ".task_item:has(.checker)"
+          );
+      }
+    } else {
+      taskList = $(tcParentId)
+        .find(
+          ".date:contains('" +
+            tcDateVal +
+            "')" +
+            ".date:not(:contains('1" +
+            tcDateVal +
+            "'))"
+        )
+        .closest(
+          ".task_item:not(.checked,.history_item,.reorder_item)" +
+            ".task_item:has(.checker)"
+        );
+    }
+
+    return taskList;
   }
 
   // 日付リストの作成
@@ -484,7 +504,7 @@ $(function () {
     for (i = 0; i < len; i++) {
       // 時刻の部分は消去
       dVal = $(dateList[i])
-        .text()
+        .textNodeText()
         .replace(/\d\d:\d\d/g, "")
         .trim();
       // ドロップダウンリストにない日付の場合は挿入
@@ -521,10 +541,8 @@ $(function () {
 
   function getDateList() {
     if (modeSectionDays) {
-      var overdueElem = $(".section_overdue .subsection_header");
-      overdueElem.children().empty();
       return $(".subsection_header > a:not(.section_overdue a)").add(
-        overdueElem
+        $(".section_overdue .subsection_header")
       );
     } else {
       return $(tcParentId)
@@ -629,4 +647,17 @@ $(function () {
     // Dateにして返す
     return new Date(str);
   }
+
+  // 直下のテキストノードのみ取得
+  $.fn.textNodeText = function () {
+    var result = "";
+    $(this)
+      .contents()
+      .each(function () {
+        if (this.nodeType === 3 && this.data) {
+          result += jQuery.trim($(this).text());
+        }
+      });
+    return result;
+  };
 });
