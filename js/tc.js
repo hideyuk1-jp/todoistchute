@@ -15,7 +15,7 @@ $(function () {
   var defaultTaskBar = "true"; // タスクバー使用の初期値
 
   var tchtml;
-  var tcParentId = "#editor"; // tcの親要素のID
+  var tcParentId = "#content"; // tcの親要素のID
   var taskListParentId = "#editor"; // タスクリストを内包する要素のID
 
   var tcCurrentDate = new Date();
