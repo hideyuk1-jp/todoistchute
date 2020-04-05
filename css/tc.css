@@ -1,10 +1,34 @@
 @charset "UTF-8";
 
+#content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: start !important;
+  -ms-flex-pack: start !important;
+  justify-content: start !important;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+  align-items: center;
+}
+
+#editor {
+  padding-top: 0px !important;
+}
+
 #tc-wrapper {
   vertical-align: top;
   font-size: .75rem;
-  padding: 0px;
-  margin-bottom: 40px;
+  padding-left: 55px;
+  padding-right: 55px;
+  padding-top: 80px;
+  padding-bottom: 40px;
+  width: 100%;
+  max-width: 1000px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0
