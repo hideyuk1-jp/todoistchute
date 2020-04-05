@@ -17,11 +17,13 @@
 }
 
 #editor {
+  box-sizing: border-box;
   padding-top: 0px !important;
 }
 
 #tc-wrapper {
   vertical-align: top;
+  box-sizing: border-box;
   font-size: .75rem;
   padding-left: 55px;
   padding-right: 55px;
@@ -32,6 +34,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0
+}
+
+@media (max-width: 750px) {
+  #tc-wrapper {
+    min-width: 325px;
+    padding-right: 42px;
+    padding-left: 42px;
+  }
 }
 
 #tc-wrapper .tc-item {
