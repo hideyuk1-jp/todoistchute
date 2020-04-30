@@ -4,7 +4,7 @@
  * License: MIT
  */
 $(function () {
-  debugMode = false; // ログ出力
+  debugMode = true; // ログ出力する場合はtrue
 
   var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
   var timePrefix = "//"; // 見積時間の接頭辞
@@ -17,6 +17,7 @@ $(function () {
   var tchtml;
   var tcParentId = "#content"; // tcの親要素のID
   var taskListParentId = "#editor"; // タスクリストを内包する要素のID
+  var tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
 
   var tcCurrentDate = new Date();
   var tcStartDate;
@@ -114,10 +115,10 @@ $(function () {
         }
       };
 
-      // 1秒おきに時間計算を実行
+      // 時間計算を定期実行
       setInterval(function () {
         check(options.tc_countMode);
-      }, 1000);
+      }, tcCheckIntervalTime);
 
       // 日付が変更された時
       $(document).on("change", "#tc-date", function () {
@@ -393,8 +394,7 @@ $(function () {
     if (debugMode)
       console.log(
         "Total: " +
-          calcEndTime.getTime() -
-          calcStartTime.getTime() +
+          (calcEndTime.getTime() - calcStartTime.getTime()) +
           "ms (Calc: " +
           (calcPreDisplayTime.getTime() - calcStartTime.getTime()) +
           "ms) (Display: " +
