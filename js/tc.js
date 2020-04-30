@@ -185,10 +185,11 @@ $(function () {
     var calcStartTime = new Date(),
       calcEndTime;
 
-    // 印刷画面の時やアクティビティ画面の時は初期化して終了
+    // 印刷画面やアクティビティ画面、近日予定画面の時は初期化して終了
     if (
       location.search.match(/print_mode=1/) ||
-      location.hash.match(/activity/)
+      location.hash.match(/activity/) ||
+      $(".upcoming_view").length > 0
     ) {
       $("#tc-wrapper").remove();
       calcEndTime = new Date();
