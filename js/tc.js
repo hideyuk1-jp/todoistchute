@@ -4,7 +4,7 @@
  * License: MIT
  */
 $(function () {
-  debugMode = true; // ログ出力する場合はtrue
+  debugMode = false; // ログ出力する場合はtrue
 
   var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
   var timePrefix = "//"; // 見積時間の接頭辞
