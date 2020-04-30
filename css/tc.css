@@ -1,23 +1,11 @@
 @charset "UTF-8";
 
 #content {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-pack: start !important;
-  -ms-flex-pack: start !important;
-  justify-content: start !important;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
-  align-items: center;
+  flex-wrap: wrap;
+  align-content: start;
 }
 
 #editor {
-  box-sizing: border-box;
   padding-top: 0px !important;
 }
 
