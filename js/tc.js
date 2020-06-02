@@ -54,7 +54,7 @@ $(function () {
 
       // 挿入される要素
       tchtml =
-        '<div id="tc-wrapper"><div id="tc-tasknum" class="tc-item"><h2>' +
+        '<div id="tc-wrapper"><div id="tc-body"><div id="tc-tasknum" class="tc-item"><h2>' +
         chrome.i18n.getMessage("remainedTaskName") +
         '</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>' +
         chrome.i18n.getMessage("totalTimeName") +
@@ -72,7 +72,7 @@ $(function () {
         chrome.i18n.getMessage("breakTimeName") +
         ': <input type="checkbox" name="tc-cbbreaktime" id="tc-cbbreaktime" /><input type="number" step="0.01" name="tc-breaktime" id="tc-breaktime" value="' +
         options.tc_breaktime +
-        '" disabled /> h</div><div id="tc-taskbar" style="display:flex"></div></div>';
+        '" disabled /> h</div><div id="tc-taskbar" style="display:flex"></div></div></div>';
 
       // フラグがtrueであればリンクアイコンのcssを挿入
       if (options.tc_linkicon == "true")

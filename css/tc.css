@@ -8,10 +8,13 @@
 #editor {
   padding-top: 0px !important;
 }
-
 #tc-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+#tc-body {
   vertical-align: top;
-  box-sizing: border-box;
   font-size: .75rem;
   padding-left: 55px;
   padding-right: 55px;
@@ -25,19 +28,19 @@
 }
 
 @media (max-width: 750px) {
-  #tc-wrapper {
+  #tc-body {
     min-width: 325px;
     padding-right: 42px;
     padding-left: 42px;
   }
 }
 
-#tc-wrapper .tc-item {
+#tc-body .tc-item {
   text-align: center;
   border: solid 1px #ddd
 }
 
-#tc-wrapper .tc-item h2 {
+#tc-body .tc-item h2 {
   font-size: .7rem;
   margin: 0;
   font-weight: normal;
@@ -57,12 +60,12 @@
 #tc-breaktime {
   width: 48px;
 }
-#tc-wrapper .tc-item h2, #tc-wrapper .tc-item div {
+#tc-body .tc-item h2, #tc-body .tc-item div {
   margin: 0;
   padding: 4px
 }
 
-#tc-wrapper #tc-tasknum {
+#tc-body #tc-tasknum {
   grid-row: 2;
   grid-column: 1;
   border-right: 0;
@@ -73,12 +76,12 @@
   -ms-border-top-left-radius: 4px
 }
 
-#tc-wrapper #tc-totaltime {
+#tc-body #tc-totaltime {
   grid-row: 2;
   grid-column: 2
 }
 
-#tc-wrapper #tc-finishtime {
+#tc-body #tc-finishtime {
   grid-row: 2;
   grid-column: 3;
   border-left: 0;
@@ -89,14 +92,14 @@
   -ms-border-top-right-radius: 4px
 }
 
-#tc-wrapper #tc-settingitems {
+#tc-body #tc-settingitems {
   grid-row: 1;
   grid-column: 1/4;
   border: 0;
   margin-bottom: 8px
 }
 
-#tc-wrapper #tc-taskbar {
+#tc-body #tc-taskbar {
   grid-row: 3;
   grid-column: 1/4;
   border: 0;
@@ -113,13 +116,13 @@
   -ms-border-bottom-right-radius: 4px
 }
 
-#tc-wrapper #tc-taskbar .task {
+#tc-body #tc-taskbar .task {
   position: relative;
   box-sizing: border-box;
   height: 10px;
 }
 
-#tc-wrapper #tc-taskbar .taskbar {
+#tc-body #tc-taskbar .taskbar {
   opacity: 1.0;
   box-sizing: border-box;
   border-left: 1px solid #ddd;
@@ -128,7 +131,7 @@
   margin: 0
 }
 
-#tc-wrapper #tc-taskbar .task:first-child>.taskbar {
+#tc-body #tc-taskbar .task:first-child>.taskbar {
   border-left: 0;
   border-bottom-left-radius: 4px;
   -moz-border-bottom-left-radius: 4px;
@@ -136,14 +139,14 @@
   -o-border-bottom-left-radius: 4px;
 }
 
-#tc-wrapper #tc-taskbar .task:last-child>.taskbar {
+#tc-body #tc-taskbar .task:last-child>.taskbar {
   border-bottom-right-radius: 4px;
   -moz-border-bottom-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
   -o-border-bottom-right-radius: 4px;
 }
 
-#tc-wrapper #tc-taskbar>div .taskpopup {
+#tc-body #tc-taskbar>div .taskpopup {
   position: absolute;
   display: none;
   top: 0;
@@ -165,15 +168,15 @@
   -o-border-radius: 4px;
 }
 
-#tc-wrapper #tc-taskbar .taskbar:hover {
+#tc-body #tc-taskbar .taskbar:hover {
   opacity: 0.5;
 }
 
-#tc-wrapper #tc-taskbar .taskbar:hover + p.taskpopup {
+#tc-body #tc-taskbar .taskbar:hover + p.taskpopup {
   display: block;
 }
 
-#tc-wrapper #tc-cnt, #tc-wrapper #tc-endtime, #tc-wrapper #tc-hour {
+#tc-body #tc-cnt, #tc-body #tc-endtime, #tc-body #tc-hour {
   font-size: 1rem;
   font-weight: bold;
   /*font-family: Hervetica*/
@@ -191,6 +194,6 @@
   color: #999
 }
 
-#tc-wrapper input, #tc-wrapper option, #tc-wrapper textarea, #tc-wrapper select, #tc-wrapper button {
+#tc-body input, #tc-body option, #tc-body textarea, #tc-body select, #tc-body button {
     font: inherit;
 }
