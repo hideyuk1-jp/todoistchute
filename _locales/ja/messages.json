@@ -73,5 +73,8 @@
   },
   "tcSettingSave": {
     "message": "保存"
+  },
+  "Overdue": {
+    "message": "期限切れ"
   }
 }
