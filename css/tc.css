@@ -5,13 +5,11 @@
   align-content: start;
 }
 
-#editor {
-  padding-top: 0px !important;
-}
 #tc-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: -80px;
 }
 #tc-body {
   vertical-align: top;

@@ -4,9 +4,10 @@
  * License: MIT
  */
 $(function () {
-  debugMode = true; // ログ出力する場合はtrue
+  debugMode = false; // ログ出力する場合はtrue
 
   var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
+  var strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
   var timePrefix = "//"; // 見積時間の接頭辞
   var defaultBeginTime = "09:00"; // 開始時刻の初期値
   var defaultBreakTime = "1"; // 休憩時間の初期値
@@ -156,7 +157,8 @@ $(function () {
       $(document).on("click", "#tc-taskbar .task", function () {
         if (debugMode) console.log("taskbar task click!");
         $("html,body").scrollTop(
-          $("#" + $(this).data("target")).offset().top - $("#top_bar").height()
+          $(`.task_list_item[data-item-id="${$(this).data("target")}"`).offset()
+            .top - $("#top_bar").height()
         );
       });
     }
@@ -273,7 +275,7 @@ $(function () {
     // タスクバーを更新
     // 初期化
     $("#tc-taskbar").empty();
-    if (tc_taskbar == "true" && taskbarhtml != "") {
+    if (tc_taskbar == "true" && taskbarhtml != "" && taskTime > 0) {
       // プロジェクトが存在する場合
       // タスクバー表示
       $("#tc-taskbar").css("display", "flex");
@@ -342,48 +344,45 @@ $(function () {
     var dateTasks = {};
     var allTasks = [];
     var allTimes = 0;
-    $(`${tcParentId} ul.items`).each((i, el) => {
-      var sectionDate = el.dataset.dayListId;
-      if (typeof sectionDate === "undefined") sectionDate = "";
-      var sectionTasks = [];
-      var sectionTimes = 0;
-      $(el)
-        .find("li.task_list_item")
-        .each((i2, el2) => {
-          var time = taskTimeSum(el2);
-          sectionTimes += time;
-          var date = sectionDate;
-          if (date === "") {
-            date = $(el2)
+    $(`${tcParentId} ul.items`).each((i, els) => {
+      var sectionDate = els.dataset.dayListId;
+      $(els)
+        .find(
+          "li.task_list_item:not(:hidden, .task_list_item--completed, .moreItemsHint)"
+        )
+        .each((i2, el) => {
+          var time = taskTimeSum(el);
+          if (typeof sectionDate === "undefined") {
+            var date = $(el)
               .find(".date")
               .textNodeText()
               .replace(/\d\d:\d\d/g, "")
               .trim();
+          } else {
+            var date = sectionDate;
           }
+          if (date === "") date = strnone;
           var task = {
-            id: el2.dataset.itemId,
-            body: $(el2).find(".task_content").text(),
+            id: el.dataset.itemId,
+            body: $(el).find(".task_content").text(),
             time,
             date,
             project: {
-              name: $(el2).find(".task_list_item__project").text(),
-              color: $(el2).find(".task_list_item__project svg").css("color"),
+              name: $(el).find(".task_list_item__project").text(),
+              color: $(el).find(".task_list_item__project svg").css("color"),
             },
           };
-          sectionTasks.push(task);
-          if (sectionDate === "" && date !== "") {
-            if (Object.keys(dateTasks).indexOf(date) !== -1) {
-              dateTasks[date].tasks.push(task);
-              dateTasks[date].times += time;
-            } else {
-              dateTasks[date] = { tasks: [task], times: time };
-            }
+
+          allTasks.push(task);
+          allTimes += time;
+
+          if (Object.keys(dateTasks).indexOf(date) !== -1) {
+            dateTasks[date].tasks.push(task);
+            dateTasks[date].times += time;
+          } else {
+            dateTasks[date] = { tasks: [task], times: time };
           }
         });
-      if (sectionDate !== "")
-        dateTasks[sectionDate] = { tasks: sectionTasks, times: sectionTimes };
-      allTasks = allTasks.concat(sectionTasks);
-      allTimes += sectionTimes;
     });
 
     var data = {
@@ -476,8 +475,10 @@ $(function () {
   function getDateFromStr(str) {
     var date = new Date();
 
-    // 指定しないの場合
-    if (str == strall) return new Date("1900/1/1");
+    // 指定しない
+    if (str === strall) return new Date("1900/1/1");
+    // 日付なし
+    if (str === strnone) return new Date("1900/1/2");
 
     // 今日、明日、昨日の場合はそのDateを返す
     if (str == "今日" || str == "Today") return date;
@@ -553,7 +554,30 @@ $(function () {
 
   function getStrFromDate(str) {
     if (str == "overdue") return chrome.i18n.getMessage("Overdue");
+    var today = new Date();
+    var yesterday = today;
+    yesterday = yesterday.setDate(yesterday.getDate() - 1);
+    var tomorrow = today;
+    tomorrow = tomorrow.setDate(tomorrow.getDate() + 1);
+    if (str === formatDate(today, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("today");
+    if (str === formatDate(yesterday, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("yesterday");
+    if (str === formatDate(tomorrow, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("tomorrow");
     return str;
+  }
+
+  function formatDate(date, format) {
+    date = new Date(date);
+    format = format.replace(/yyyy/g, date.getFullYear());
+    format = format.replace(/MM/g, ("0" + (date.getMonth() + 1)).slice(-2));
+    format = format.replace(/dd/g, ("0" + date.getDate()).slice(-2));
+    format = format.replace(/HH/g, ("0" + date.getHours()).slice(-2));
+    format = format.replace(/mm/g, ("0" + date.getMinutes()).slice(-2));
+    format = format.replace(/ss/g, ("0" + date.getSeconds()).slice(-2));
+    format = format.replace(/SSS/g, ("00" + date.getMilliseconds()).slice(-3));
+    return format;
   }
 
   // 直下のテキストノードのみ取得

@@ -6,10 +6,22 @@
     "message": "Todoistのタスクに設定した見積時間を計算して、完了予定時刻を表示します。"
   },
   "allDate": {
-    "message": "指定しない"
+    "message": "全て"
+  },
+  "noDate": {
+    "message": "日付なし"
   },
   "dateSelectName": {
     "message": "日付"
+  },
+  "today": {
+    "message": "今日"
+  },
+  "yesterday": {
+    "message": "昨日"
+  },
+  "tomorrow": {
+    "message": "明日"
   },
   "startTimeName": {
     "message": "開始時刻"
