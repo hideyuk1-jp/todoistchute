@@ -22,9 +22,7 @@ Install the extension via Chrome webstore.
 
 ### Set the estimated time for a task
 
-Depending on Todoist's plan, set the estimated time for label or text for a task.
-
-In the initial state, TodoistChute checks the presence of labels on the page and calculates automatically from label or text.
+if you set the estimated time for label or text for a task, TodoistChute calculates automatically.
 
 #### 1. Label (for Todoist premium plan)
 
