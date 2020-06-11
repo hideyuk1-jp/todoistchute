@@ -430,6 +430,9 @@ $(function () {
     $("#tc-date").empty();
     $("#tc-date").append($("<option></option>").val("ALL").text(strall));
 
+    // 日付が1種類以下の場合は全てで事足りるため処理終了
+    if (Object.keys(taskData.dateTasks).length <= 1) return false;
+
     // 日付リストからドロップダウンリストに挿入
     var dvalhtml = "";
     $.each(taskData.dateTasks, (i, v) => {
