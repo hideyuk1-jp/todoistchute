@@ -1,14 +1,14 @@
 /**
  * @license TodoistChute
- * (c) 2018 hideyuk1 https://hideyuk1.com
+ * (c) 2018 hideyuk1 https://hideyuk1.dev
  * License: MIT
  */
 $(function () {
   debugMode = false; // ログ出力する場合はtrue
 
   var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
+  var strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
   var timePrefix = "//"; // 見積時間の接頭辞
-  var defaultCountMode = "auto";
   var defaultBeginTime = "09:00"; // 開始時刻の初期値
   var defaultBreakTime = "1"; // 休憩時間の初期値
   var defaultLinkIcon = "false"; // リンクアイコン挿入の初期値
@@ -35,7 +35,6 @@ $(function () {
   // 設定をchrome.storageから読込
   chrome.storage.sync.get(
     {
-      tc_countMode: defaultCountMode,
       tc_begintime: defaultBeginTime,
       tc_breaktime: defaultBreakTime,
       tc_linkicon: defaultLinkIcon,
@@ -77,17 +76,17 @@ $(function () {
       // フラグがtrueであればリンクアイコンのcssを挿入
       if (options.tc_linkicon == "true")
         $("head").append(
-          '<style type="text/css"><!-- .sel_item_content a.ex_link:after {margin: 0 3px;font-family: FontAwesome;content: "\\f08e";font-size: 100%;} --></style>'
+          '<style type="text/css"><!-- .task_content a:after {margin: 0 3px;font-family: FontAwesome;content: "\\f08e";font-size: 100%;} --></style>'
         );
 
       tc_taskbar = options.tc_taskbar;
 
       // タスクや幅に変更があれば時間計算を実行
-      var check = function (tc_countMode) {
+      var check = function () {
         curTaskContent = $(taskListParentId).html();
         // タスクアイテムが変わったら時間計測を実行
         if (taskContent != curTaskContent) {
-          calcTime(tc_countMode);
+          calcTime();
           taskContent = curTaskContent;
           tcWidth = $("#tc-wrapper").width();
           return true;
@@ -95,7 +94,7 @@ $(function () {
 
         // widthが変わったら時間計測を実行
         if (tcWidth != $("#tc-wrapper").width()) {
-          calcTime(tc_countMode);
+          calcTime();
           taskContent = curTaskContent;
           tcWidth = $("#tc-wrapper").width();
           return true;
@@ -110,30 +109,30 @@ $(function () {
         var time2 =
           date2.getHours() + ":" + ("0" + date2.getMinutes()).slice(-2);
         if (time1 != time2) {
-          calcTime(tc_countMode);
+          calcTime();
           return true;
         }
       };
 
       // 時間計算を定期実行
       setInterval(function () {
-        check(options.tc_countMode);
+        check();
       }, tcCheckIntervalTime);
 
       // 日付が変更された時
       $(document).on("change", "#tc-date", function () {
         if (debugMode) console.log("date change!");
-        calcTime(options.tc_countMode);
+        calcTime();
       });
 
       // 開始時刻や休憩時間が変更された時
       $(document).on("change", "#tc-begintime", function () {
         if (debugMode) console.log("begintime change!");
-        calcTime(options.tc_countMode);
+        calcTime();
       });
       $(document).on("change", "#tc-breaktime", function () {
         if (debugMode) console.log("breaktime change!");
-        calcTime(options.tc_countMode);
+        calcTime();
       });
 
       // 開始時刻や休憩時間のチェックボックスがクリックされた時
@@ -143,7 +142,7 @@ $(function () {
           "disabled",
           !$("#tc-cbbegintime").prop("checked")
         );
-        calcTime(options.tc_countMode);
+        calcTime();
       });
       $(document).on("click", "#tc-cbbreaktime", function () {
         if (debugMode) console.log("breaktime checkbox click!");
@@ -151,36 +150,23 @@ $(function () {
           "disabled",
           !$("#tc-cbbreaktime").prop("checked")
         );
-        calcTime(options.tc_countMode);
+        calcTime();
       });
 
       // タスクバーのタスクがクリックされた時
       $(document).on("click", "#tc-taskbar .task", function () {
         if (debugMode) console.log("taskbar task click!");
         $("html,body").scrollTop(
-          $("#" + $(this).data("target")).offset().top - $("#top_bar").height()
+          $(`.task_list_item[data-item-id="${$(this).data("target")}"`).offset()
+            .top - $("#top_bar").height()
         );
       });
     }
   );
 
   // 時間計測
-  function calcTime(countMode) {
+  function calcTime() {
     if (debugMode) console.log("calc!");
-    var taskList,
-      taskTime = 0,
-      taskTimeTmp,
-      i,
-      j,
-      len,
-      len2,
-      labelList,
-      labelTmp,
-      textList,
-      textTmp,
-      prjnameTmp,
-      prjcolorTmp,
-      taskbar = [];
 
     // 処理時間計測用
     var calcStartTime = new Date(),
@@ -200,17 +186,23 @@ $(function () {
     // #tc-wrapperがない場合は挿入
     if (!$("#tc-wrapper").length) tcInsert();
 
-    // 集計方法が自動選択の場合はラベルの有無で見積時間の集計方法変更
-    if (countMode == "auto") countMode = $(".label").length ? "label" : "text";
+    // タスクリストの取得
+    taskData = getTaskList();
+    if (typeof taskData === "undefined") {
+      $("#tc-wrapper").remove();
+      calcEndTime = new Date();
+      return false;
+    }
 
     // 日付リスト作成
-    showDateList();
+    showDateList(taskData);
     var tcDateVal = $("#tc-date").val();
     if (debugMode) console.log("tcDateVal: ", tcDateVal);
 
-    // タスクリストの取得
-    taskList = getTaskList(tcDateVal);
-    if (debugMode) console.log("taskList: ", taskList);
+    if (tcDateVal != "ALL") taskData = taskData.dateTasks[tcDateVal];
+    if (debugMode) console.log("taskData: ", taskData);
+
+    tasks = taskData.tasks;
 
     // dateの準備
     var date = new Date();
@@ -225,96 +217,30 @@ $(function () {
     tcStartDate = new Date(date.getTime());
 
     var taskbarhtml = "";
-
-    len = taskList.length;
-    for (i = 0; i < len; i++) {
-      // 見積時間の合計を計算
-      taskTimeTmp = 0;
-      if (countMode == "label") {
-        // ラベルから集計
-        labelList = $(taskList[i]).find(".label:not(.label_sep)");
-        len2 = labelList.length;
-        for (j = 0; j < len2; j++) {
-          labelTmp = $(labelList[j]).text().replace(timePrefix, "");
-          if ($.isNumeric(labelTmp)) taskTimeTmp += parseInt(labelTmp);
-        }
-      } else if (countMode == "text") {
-        // タスクテキストから集計
-        $(taskList[i])
-          .find(".task_item_content_text")
-          .contents()
-          .each(function (index, element) {
-            if (this.nodeType == 3) {
-              regexp = new RegExp(
-                timePrefix.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&") + "(\\d+)",
-                "g"
-              );
-              textList = $(this).text().match(regexp);
-              if (!textList) return false;
-              len2 = textList.length;
-              for (j = 0; j < len2; j++) {
-                textTmp = textList[j].replace(timePrefix, "");
-                if ($.isNumeric(textTmp)) taskTimeTmp += parseInt(textTmp);
-              }
-            }
-          });
+    $.each(taskData.tasks, (i, v) => {
+      if (v.project.name == "") {
+        taskbarhtml = "";
+        return false;
       }
-      taskTime += taskTimeTmp;
-
-      // タスクバーを使用しない場合は次へ
-      if (tc_taskbar != "true") continue;
-
-      // タスクテキスト取得
-      taskText = $(taskList[i]).find(".task_item_content_text").text();
-
-      // プロジェクトの名前とカラー取得
-      prjnameTmp = $(taskList[i]).find(".project_item__name").text();
-      prjcolorTmp = $(taskList[i])
-        .find(".project_item__color")
-        .css("background-color");
-
-      // 取得出来ない場合は次へ
-      if (!prjnameTmp || !prjcolorTmp) continue;
-
-      if (taskTimeTmp <= 0) continue;
-
-      // そのタスクの完了時刻を時間計算
-      tcStartDate.setMinutes(tcStartDate.getMinutes() + taskTimeTmp);
+      tcStartDate.setMinutes(tcStartDate.getMinutes() + v.time);
       // 日をまたぐ数を計算
       var ndate = new Date();
-      ddiff = getDiff(ndate.toDateString(), tcStartDate.toDateString());
+      var ddiff = getDiff(ndate.toDateString(), tcStartDate.toDateString());
       var taskfintime =
         tcStartDate.getHours() +
         ddiff * 24 +
         ":" +
         ("0" + tcStartDate.getMinutes()).slice(-2);
+      taskbarhtml += `<div class="task" style="flex:${v.time}" data-target="${v.id}"><div class="taskbar" style="background-color:${v.project.color}"></div><p class="taskpopup"><span class="taskbar-tasktext">${v.body}</span> <span class="taskbar-tasktime">${v.time}m</span> <span class="taskbar-taskfintime">${taskfintime}</span><br /><span class="taskbar-prjname">≪ ${v.project.name}</span></p></div>`;
+    });
 
-      taskbarhtml +=
-        '<div class="task" style="flex:' +
-        taskTimeTmp +
-        '" data-target="' +
-        $(taskList[i]).attr("id") +
-        '"><div class="taskbar" style="background-color:' +
-        prjcolorTmp +
-        '"></div><p class="taskpopup"><span class="taskbar-tasktext">' +
-        taskText +
-        '</span> <span class="taskbar-tasktime">' +
-        taskTimeTmp +
-        'm</span> <span class="taskbar-taskfintime">' +
-        taskfintime +
-        '</span><br /><span class="taskbar-prjname">≪ ' +
-        prjnameTmp +
-        "</span></p></div>";
-    }
-    taskTimeTmp = taskTime;
-    // console.log('countMode: ' + countMode);
-    // console.log('タスク時間合計（分）: ' + taskTimeTmp);
+    taskTime = taskData.times;
 
     calcPreDisplayTime = new Date();
 
     // 表示更新
     // 残りタスクを更新
-    $("#tc-cnt").text(taskList.length);
+    $("#tc-cnt").text(tasks.length);
     // 見積時間を更新
     $("#tc-hour").text((taskTime / 60).toFixed(1) + " h");
     // 完了予定を更新
@@ -349,7 +275,7 @@ $(function () {
     // タスクバーを更新
     // 初期化
     $("#tc-taskbar").empty();
-    if (tc_taskbar == "true" && taskbarhtml != "") {
+    if (tc_taskbar == "true" && taskbarhtml != "" && taskTime > 0) {
       // プロジェクトが存在する場合
       // タスクバー表示
       $("#tc-taskbar").css("display", "flex");
@@ -413,106 +339,105 @@ $(function () {
     $(tcParentId).prepend(tchtml);
   }
 
-  // タスクリストの取得
-  function getTaskList(tcDateVal) {
-    var taskList;
-    if (tcDateVal == "ALL") {
-      taskList = $(tcParentId).find(
-        ".task_item:not(.checked,.history_item,.reorder_item)" +
-          ".task_item:has(.checker)"
-      );
-    } else if (modeSectionDays) {
-      taskList = $(tcParentId)
-        .find(".subsection_header > a:contains('" + tcDateVal + "')")
-        .closest("div")
-        .next("ul")
+  // タスクリストの取得し、jsonを返す
+  function getTaskList() {
+    var dateTasks = {};
+    var allTasks = [];
+    var allTimes = 0;
+    $(`${tcParentId} ul.items`).each((i, els) => {
+      var sectionDate = els.dataset.dayListId;
+      $(els)
         .find(
-          ".task_item:not(.checked,.history_item,.reorder_item)" +
-            ".task_item:has(.checker)"
-        );
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".section_header > a:contains('" + tcDateVal + "')")
-          .closest("div")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".subsection_header:contains('" + tcDateVal + "')")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-      if (!taskList.length) {
-        taskList = $(tcParentId)
-          .find(".section_header:contains('" + tcDateVal + "')")
-          .next("ul")
-          .find(
-            ".task_item:not(.checked,.history_item,.reorder_item)" +
-              ".task_item:has(.checker)"
-          );
-      }
-    } else {
-      taskList = $(tcParentId)
-        .find(
-          ".date:contains('" +
-            tcDateVal +
-            "')" +
-            ".date:not(:contains('1" +
-            tcDateVal +
-            "'))"
+          "li.task_list_item:not(:hidden, .task_list_item--completed, .moreItemsHint)"
         )
-        .closest(
-          ".task_item:not(.checked,.history_item,.reorder_item)" +
-            ".task_item:has(.checker)"
-        );
-    }
+        .each((i2, el) => {
+          var time = taskTimeSum(el);
+          if (typeof sectionDate === "undefined") {
+            var date = $(el)
+              .find(".date")
+              .textNodeText()
+              .replace(/\d\d:\d\d/g, "")
+              .trim();
+          } else {
+            var date = sectionDate;
+          }
+          if (date === "") date = strnone;
+          var task = {
+            id: el.dataset.itemId,
+            body: $(el).find(".task_content").text(),
+            time,
+            date,
+            project: {
+              name: $(el).find(".task_list_item__project").text(),
+              color: $(el).find(".task_list_item__project svg").css("color"),
+            },
+          };
 
-    return taskList;
+          allTasks.push(task);
+          allTimes += time;
+
+          if (Object.keys(dateTasks).indexOf(date) !== -1) {
+            dateTasks[date].tasks.push(task);
+            dateTasks[date].times += time;
+          } else {
+            dateTasks[date] = { tasks: [task], times: time };
+          }
+        });
+    });
+
+    var data = {
+      tasks: allTasks,
+      times: allTimes,
+      dateTasks: dateTasks,
+    };
+
+    return data;
   }
 
-  // 日付リストの作成
-  var dateList;
-  var modeSectionDays;
+  function taskTimeSum(el) {
+    var taskTime = 0;
 
-  function showDateList() {
-    var i, tcDateVal;
+    // ラベルから集計
+    $(el)
+      .find(".task_list_item__info_tags__label")
+      .each((i, label) => {
+        var labelTmp = $(label).text().replace(timePrefix, "");
+        if ($.isNumeric(labelTmp)) taskTime += parseInt(labelTmp);
+      });
 
+    // タスクテキストから集計
+    var regexp = new RegExp(
+      timePrefix.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&") + "(\\d+)",
+      "g"
+    );
+    var textList = $(el).find(".task_content").text().match(regexp);
+    if (!textList) return taskTime;
+    var len = textList.length;
+    for (j = 0; j < len; j++) {
+      textTmp = textList[j].replace(timePrefix, "");
+      if ($.isNumeric(textTmp)) taskTime += parseInt(textTmp);
+    }
+
+    return taskTime;
+  }
+
+  // 日付リストの表示
+  function showDateList(taskData) {
     // 現在選択中の日付を取得
-    tcDateVal = $("#tc-date").val();
+    var tcDateVal = $("#tc-date").val();
 
     // 初期化
     $("#tc-date").empty();
     $("#tc-date").append($("<option></option>").val("ALL").text(strall));
 
-    // セクションごとの日付か判定
-    modeSectionDays = isSectionDays();
-    if (debugMode) console.log("modeSectionDays: ", modeSectionDays);
-
-    // 日付リストの取得
-    dateList = getDateList();
-    if (debugMode) console.log("dateList: ", dateList);
+    // 日付が1種類以下の場合は全てで事足りるため処理終了
+    if (Object.keys(taskData.dateTasks).length <= 1) return false;
 
     // 日付リストからドロップダウンリストに挿入
-    len = dateList.length;
     var dvalhtml = "";
-    for (i = 0; i < len; i++) {
-      // 時刻の部分は消去
-      dVal = $(dateList[i])
-        .textNodeText()
-        .replace(/\d\d:\d\d/g, "")
-        .trim();
-      // ドロップダウンリストにない日付の場合は挿入
-      reg = new RegExp('<option value="' + dVal + '">');
-      if (dVal != "" && !dvalhtml.match(reg))
-        dvalhtml += '<option value="' + dVal + '">' + dVal + "</option>";
-    }
+    $.each(taskData.dateTasks, (i, v) => {
+      dvalhtml += `<option value="${i}">${getStrFromDate(i)}</option>`;
+    });
     $("#tc-date").append(dvalhtml);
 
     // 日付順にソート
@@ -531,27 +456,6 @@ $(function () {
     // 選択肢がなければALLにする
     if (!$("#tc-date").val()) {
       $("#tc-date").val("ALL");
-    }
-  }
-
-  //  セクションごとの日付かどうかを判定
-  function isSectionDays() {
-    // .section_dayが複数ある
-    return $(".section_day").length > 1 || $(".section_overdue").length > 0;
-  }
-
-  function getDateList() {
-    if (modeSectionDays) {
-      return $(".subsection_header > a:not(.section_overdue a)").add(
-        $(".section_overdue .subsection_header")
-      );
-    } else {
-      return $(tcParentId)
-        .find(
-          ".task_item:not(.checked,.history_item,.reorder_item)" +
-            ".task_item:has(.checker)"
-        )
-        .find(".date");
     }
   }
 
@@ -574,8 +478,10 @@ $(function () {
   function getDateFromStr(str) {
     var date = new Date();
 
-    // 指定しないの場合
-    if (str == strall) return new Date("1900/1/1");
+    // 指定しない
+    if (str === strall) return new Date("1900/1/1");
+    // 日付なし
+    if (str === strnone) return new Date("1900/1/2");
 
     // 今日、明日、昨日の場合はそのDateを返す
     if (str == "今日" || str == "Today") return date;
@@ -589,7 +495,7 @@ $(function () {
     }
 
     // 期限切れの場合は前日
-    if (str == "期限切れ" || str == "Overdue") {
+    if (str == "期限切れ" || str == "Overdue" || str == "overdue") {
       date.setDate(date.getDate() - 1);
       return date;
     }
@@ -647,6 +553,34 @@ $(function () {
 
     // Dateにして返す
     return new Date(str);
+  }
+
+  function getStrFromDate(str) {
+    if (str == "overdue") return chrome.i18n.getMessage("Overdue");
+    var today = new Date();
+    var yesterday = today;
+    yesterday = yesterday.setDate(yesterday.getDate() - 1);
+    var tomorrow = today;
+    tomorrow = tomorrow.setDate(tomorrow.getDate() + 1);
+    if (str === formatDate(today, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("today");
+    if (str === formatDate(yesterday, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("yesterday");
+    if (str === formatDate(tomorrow, "yyyy-MM-dd"))
+      return chrome.i18n.getMessage("tomorrow");
+    return str;
+  }
+
+  function formatDate(date, format) {
+    date = new Date(date);
+    format = format.replace(/yyyy/g, date.getFullYear());
+    format = format.replace(/MM/g, ("0" + (date.getMonth() + 1)).slice(-2));
+    format = format.replace(/dd/g, ("0" + date.getDate()).slice(-2));
+    format = format.replace(/HH/g, ("0" + date.getHours()).slice(-2));
+    format = format.replace(/mm/g, ("0" + date.getMinutes()).slice(-2));
+    format = format.replace(/ss/g, ("0" + date.getSeconds()).slice(-2));
+    format = format.replace(/SSS/g, ("00" + date.getMilliseconds()).slice(-3));
+    return format;
   }
 
   // 直下のテキストノードのみ取得

@@ -5,17 +5,15 @@
   align-content: start;
 }
 
-#editor {
-  padding-top: 0px !important;
-}
 #tc-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: -80px;
 }
 #tc-body {
   vertical-align: top;
-  font-size: .75rem;
+  font-size: 0.75rem;
   padding-left: 55px;
   padding-right: 55px;
   padding-top: 80px;
@@ -24,7 +22,7 @@
   max-width: 1000px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 0
+  grid-gap: 0;
 }
 
 @media (max-width: 750px) {
@@ -37,17 +35,18 @@
 
 #tc-body .tc-item {
   text-align: center;
-  border: solid 1px #ddd
+  border: solid 1px #ddd;
 }
 
 #tc-body .tc-item h2 {
-  font-size: .7rem;
+  font-size: 0.7rem;
   margin: 0;
   font-weight: normal;
-  border-bottom: solid 1px #ddd
+  border-bottom: solid 1px #ddd;
 }
 
-#tc-begintime, #tc-breaktime {
+#tc-begintime,
+#tc-breaktime {
   padding: 3px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -55,14 +54,15 @@
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   -o-border-radius: 4px;
-  -ms-border-radius: 4px
+  -ms-border-radius: 4px;
 }
 #tc-breaktime {
   width: 48px;
 }
-#tc-body .tc-item h2, #tc-body .tc-item div {
+#tc-body .tc-item h2,
+#tc-body .tc-item div {
   margin: 0;
-  padding: 4px
+  padding: 4px;
 }
 
 #tc-body #tc-tasknum {
@@ -73,12 +73,12 @@
   -moz-border-top-left-radius: 4px;
   -webkit-border-top-left-radius: 4px;
   -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px
+  -ms-border-top-left-radius: 4px;
 }
 
 #tc-body #tc-totaltime {
   grid-row: 2;
-  grid-column: 2
+  grid-column: 2;
 }
 
 #tc-body #tc-finishtime {
@@ -89,14 +89,14 @@
   -moz-border-top-right-radius: 4px;
   -webkit-border-top-right-radius: 4px;
   -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px
+  -ms-border-top-right-radius: 4px;
 }
 
 #tc-body #tc-settingitems {
   grid-row: 1;
   grid-column: 1/4;
   border: 0;
-  margin-bottom: 8px
+  margin-bottom: 8px;
 }
 
 #tc-body #tc-taskbar {
@@ -109,11 +109,12 @@
   -moz-border-bottom-left-radius: 4px;
   -webkit-border-bottom-left-radius: 4px;
   -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px border-bottom-right-radius: 4px;
+  -ms-border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
   -moz-border-bottom-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
   -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px
+  -ms-border-bottom-right-radius: 4px;
 }
 
 #tc-body #tc-taskbar .task {
@@ -123,15 +124,15 @@
 }
 
 #tc-body #tc-taskbar .taskbar {
-  opacity: 1.0;
+  opacity: 1;
   box-sizing: border-box;
   border-left: 1px solid #ddd;
   height: 10px;
   padding: 0;
-  margin: 0
+  margin: 0;
 }
 
-#tc-body #tc-taskbar .task:first-child>.taskbar {
+#tc-body #tc-taskbar .task:first-child > .taskbar {
   border-left: 0;
   border-bottom-left-radius: 4px;
   -moz-border-bottom-left-radius: 4px;
@@ -139,29 +140,30 @@
   -o-border-bottom-left-radius: 4px;
 }
 
-#tc-body #tc-taskbar .task:last-child>.taskbar {
+#tc-body #tc-taskbar .task:last-child > .taskbar {
   border-bottom-right-radius: 4px;
   -moz-border-bottom-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
   -o-border-bottom-right-radius: 4px;
 }
 
-#tc-body #tc-taskbar>div .taskpopup {
+#tc-body #tc-taskbar > div .taskpopup {
   position: absolute;
   display: none;
+  z-index: 1000;
   top: 0;
   left: 50%;
   -webkit-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
   max-width: 320px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   color: #202020;
   padding: 8px;
   width: max-content;
   background-color: #fff;
   margin: 14px 0 0 0;
-  box-shadow: 0 1px 8px 0 rgba(0,0,0,0.08), 0 0 1px 0 rgba(0,0,0,0.3);
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.08), 0 0 1px 0 rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -176,24 +178,30 @@
   display: block;
 }
 
-#tc-body #tc-cnt, #tc-body #tc-endtime, #tc-body #tc-hour {
+#tc-body #tc-cnt,
+#tc-body #tc-endtime,
+#tc-body #tc-hour {
   font-size: 1rem;
   font-weight: bold;
   /*font-family: Hervetica*/
 }
 
 .tc-counted {
-  color: #0082c5
+  color: #0082c5;
 }
 
 #tc-taskbar .taskbar-tasktext {
-  font-weight: bold
+  font-weight: bold;
 }
 
 #tc-taskbar .taskbar-prjname {
-  color: #999
+  color: #999;
 }
 
-#tc-body input, #tc-body option, #tc-body textarea, #tc-body select, #tc-body button {
-    font: inherit;
+#tc-body input,
+#tc-body option,
+#tc-body textarea,
+#tc-body select,
+#tc-body button {
+  font: inherit;
 }

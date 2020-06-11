@@ -8,8 +8,20 @@
   "allDate": {
     "message": "All"
   },
+  "noDate": {
+    "message": "None"
+  },
   "dateSelectName": {
     "message": "Date"
+  },
+  "today": {
+    "message": "Today"
+  },
+  "yesterday": {
+    "message": "Yesterday"
+  },
+  "tomorrow": {
+    "message": "Tomorrow"
   },
   "startTimeName": {
     "message": "Start"
@@ -51,7 +63,7 @@
     "message": "If you select \"Auto\", calculation method will change depending on existence of labels (including those not related to estimated time)."
   },
   "tcSettingCalculationModeExplain2": {
-    "message":"If label exists, estimated time entered in label will be counted. If label does not exist, estimated time entered in task text is counted."
+    "message": "If label exists, estimated time entered in label will be counted. If label does not exist, estimated time entered in task text is counted."
   },
   "tcSettingDefaultStartTimeName": {
     "message": "Default Starttime"
@@ -73,5 +85,8 @@
   },
   "tcSettingSave": {
     "message": "Save"
+  },
+  "Overdue": {
+    "message": "Overdue"
   }
 }
