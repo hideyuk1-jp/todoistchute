@@ -77,6 +77,12 @@
   "tcSettingShow": {
     "message": "表示する"
   },
+  "tcSettingCalenderName": {
+    "message": "見積時間カレンダー"
+  },
+  "tcSettingTodoistApiTokenName": {
+    "message": "APIトークン"
+  },
   "tcSettingLinkInTaskName": {
     "message": "タスク内リンク"
   },

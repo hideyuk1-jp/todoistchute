@@ -77,6 +77,12 @@
   "tcSettingShow": {
     "message": "Show"
   },
+  "tcSettingCalenderName": {
+    "message": "Calender"
+  },
+  "tcSettingTodoistApiTokenName": {
+    "message": "API Token"
+  },
   "tcSettingLinkInTaskName": {
     "message": "Link in Task"
   },

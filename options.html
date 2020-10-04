@@ -42,7 +42,7 @@
         <path
           d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
           fill="currentColor"
-          style="transform-origin: 130px 106px;"
+          style="transform-origin: 130px 106px"
           class="octo-arm"
         ></path>
         <path
@@ -142,6 +142,40 @@
               />
               <span data-i18n="tcSettingShow">表示する</span></label
             >
+          </div>
+        </div>
+      </form>
+      <form class="uk-form-horizontal">
+        <div class="uk-margin">
+          <label class="uk-form-label" data-i18n="tcSettingCalenderName"
+            >見積時間カレンダー</label
+          >
+          <div class="uk-form-controls uk-form-controls-text">
+            <label
+              ><input
+                class="uk-checkbox"
+                type="checkbox"
+                name="calender_checkbox"
+                id="calender_checkbox"
+                checked="checked"
+              />
+              <span data-i18n="tcSettingShow">表示する</span></label
+            >
+          </div>
+        </div>
+      </form>
+      <form class="uk-form-horizontal">
+        <div class="uk-margin">
+          <label class="uk-form-label" data-i18n="tcSettingTodoistApiTokenName"
+            >APIトークン</label
+          >
+          <div class="uk-form-controls uk-form-controls-text">
+            <input
+              class="uk-input uk-form-small"
+              type="text"
+              name="todoist_api_token"
+              id="todoist_api_token"
+            />
           </div>
         </div>
       </form>

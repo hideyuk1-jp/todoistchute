@@ -14,6 +14,8 @@ $(function () {
     tc_breaktime: "1",
     tc_linkicon: "false",
     tc_taskbar: "true",
+    tc_calender: "false",
+    tc_todoist_api_token: "",
   };
 
   //セーブボタンが押されたら、chrome.storageに保存
@@ -30,6 +32,12 @@ $(function () {
     } else {
       tc_options.tc_taskbar = "false";
     }
+    if ($("input[name=calender_checkbox]").prop("checked")) {
+      tc_options.tc_calender = "true";
+    } else {
+      tc_options.tc_calender = "false";
+    }
+    tc_options.tc_todoist_api_token = $("input[name=todoist_api_token]").val();
     chrome.storage.sync.set(tc_options, function () {});
   });
 
@@ -58,5 +66,12 @@ $(function () {
     } else {
       $("input[name=taskbar_checkbox]").prop("checked", false);
     }
+    if (options.tc_calender == "true") {
+      $("input[name=calender_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_checkbox]").prop("checked", false);
+    }
+    if (options.tc_todoist_api_token)
+      $("input[name=todoist_api_token]").val([options.tc_todoist_api_token]);
   });
 });
