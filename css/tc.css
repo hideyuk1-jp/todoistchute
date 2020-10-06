@@ -209,6 +209,7 @@
   font: inherit;
 }
 
+/* 見積時間カレンダー */
 #tc-calender {
   position: relative;
   display: grid;
@@ -260,6 +261,9 @@
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 }
+#tc-calender .accent {
+  background-color: #f2dede;
+}
 
 #tc-calender .content-col:first-child {
   border-bottom-left-radius: 4px;
@@ -289,6 +293,15 @@
   content: "";
   vertical-align: middle;
 }
+.kunoji::before {
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #999;
+  border-right: 1px solid #999;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
 .triangle-in-circle::before {
   width: 24px;
   height: 24px;
@@ -310,9 +323,9 @@
   cursor: pointer;
 }
 #tc-calender-next {
-  right: -28px;
+  right: -24px;
 }
 #tc-calender-prev {
-  left: -28px;
+  left: -24px;
   transform: scale(-1, 1);
 }

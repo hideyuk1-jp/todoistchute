@@ -80,6 +80,13 @@
   "tcSettingCalenderName": {
     "message": "見積時間カレンダー"
   },
+  "tcSettingCalenderBackgroundColorName": {
+    "message": "背景色"
+  },
+  "tcSettingColorChange": {
+    "message": "以上は色を変更する"
+  },
+
   "tcSettingTodoistApiTokenName": {
     "message": "APIトークン"
   },

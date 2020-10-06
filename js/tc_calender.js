@@ -116,6 +116,8 @@ class TodoistApi {
 
 $(function () {
   const defaultCalender = "false"; // 見積時間カレンダー使用の初期値
+  const defaultCalenderAccent = "false"; // 背景色強調の初期値
+  const defaultCalenderAccentMinTime = 10; // 背景色強調の下限時間の初期値
   const defaultTodoistApiToken = ""; // APIトークンの初期値
 
   const numberPerPageMax = 15;
@@ -134,6 +136,8 @@ $(function () {
   chrome.storage.sync.get(
     {
       tc_calender: defaultCalender,
+      tc_calender_accent: defaultCalenderAccent,
+      tc_calender_accent_min_time: defaultCalenderAccentMinTime,
       tc_todoist_api_token: defaultTodoistApiToken,
     },
     async function (options) {
@@ -209,8 +213,15 @@ $(function () {
           } else {
             months[d.getMonth() + 1] = 1;
           }
+          if (
+            options.tc_calender_accent == "true" &&
+            times >= options.tc_calender_accent_min_time * 60
+          ) {
+            tc_calender_html += '<div class="content-col accent">';
+          } else {
+            tc_calender_html += '<div class="content-col">';
+          }
           tc_calender_html +=
-            '<div class="content-col">' +
             d.getDate() +
             " " +
             ["日", "月", "火", "水", "木", "金", "土"][d.getDay()] +
@@ -239,7 +250,7 @@ $(function () {
         }
         month_html += "</div>";
         tc_calender_ele = $(
-          '<div id="tc-calender"><span id="tc-calender-next" class="tc-calender-arrow triangle-in-circle"></span><span id="tc-calender-prev" class="tc-calender-arrow triangle-in-circle"></span>' +
+          '<div id="tc-calender"><span id="tc-calender-next" class="tc-calender-arrow kunoji"></span><span id="tc-calender-prev" class="tc-calender-arrow kunoji"></span>' +
             month_html +
             tc_calender_html +
             "</div>"
@@ -262,6 +273,9 @@ $(function () {
         return Math.min(numberPerPageMax, Math.floor(cw / 50));
       };
 
+      // １回目実行
+      check();
+
       // 定期実行
       setInterval(function () {
         check();
@@ -280,7 +294,10 @@ $(function () {
       });
 
       // ウィンドウ幅が変わった場合にビューを更新
-      $(window).resize(() => view());
+      $(window).resize(() => {
+        tcCalenderPage = 0;
+        view();
+      });
     }
   );
 });

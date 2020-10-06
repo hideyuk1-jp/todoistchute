@@ -117,7 +117,7 @@
             <input
               class="uk-input uk-form-small"
               type="number"
-              step="0.01"
+              step="0.25"
               name="breaktime"
               id="breaktime"
               value="1"
@@ -145,6 +145,9 @@
           </div>
         </div>
       </form>
+      <h2 class="uk-h3" data-i18n="tcSettingCalenderName">
+        見積時間カレンダー
+      </h2>
       <form class="uk-form-horizontal">
         <div class="uk-margin">
           <label class="uk-form-label" data-i18n="tcSettingCalenderName"
@@ -176,6 +179,33 @@
               name="todoist_api_token"
               id="todoist_api_token"
             />
+          </div>
+        </div>
+      </form>
+      <form class="uk-form-horizontal">
+        <div class="uk-margin">
+          <label
+            class="uk-form-label"
+            data-i18n="tcSettingCalenderBackgroundColorName"
+            >背景色</label
+          >
+          <div class="uk-form-controls uk-form-controls-text">
+            <input
+              class="uk-checkbox"
+              type="checkbox"
+              name="calender_accent_checkbox"
+              id="calender_accent_checkbox"
+              checked="checked"
+            />
+            <input
+              class="uk-input uk-form-small"
+              type="number"
+              step="0.25"
+              name="accent_min_time"
+              id="accent_min_time"
+              value="10"
+            />
+            h　<span data-i18n="tcSettingColorChange">以上は色を変える</span>
           </div>
         </div>
       </form>

@@ -1,34 +1,40 @@
 @charset "UTF-8";
 
 .text-gray {
-  color: #999
+  color: #999;
 }
 
-html, body {
+html,
+body {
   font-size: 13px !important;
 }
 
-#breaktime {
-  width: 48px;
+#breaktime,
+#accent_min_time {
+  width: 56px;
 }
 
-input, textarea, select, button {
-    font: inherit;
+input,
+textarea,
+select,
+button {
+  font: inherit;
 }
 
-.uk-form-label, .uk-form-small {
-    font-size: 1.0rem;
+.uk-form-label,
+.uk-form-small {
+  font-size: 1rem;
 }
 
-input[type="time"]::-webkit-inner-spin-button{
+input[type="time"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
-input[type="time"]::-webkit-clear-button{
+input[type="time"]::-webkit-clear-button {
   -webkit-appearance: none;
 }
-input[type="number"]::-webkit-inner-spin-button{
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
-input[type="number"]::-webkit-clear-button{
+input[type="number"]::-webkit-clear-button {
   -webkit-appearance: none;
 }

@@ -15,6 +15,8 @@ $(function () {
     tc_linkicon: "false",
     tc_taskbar: "true",
     tc_calender: "false",
+    tc_calender_accent: "false",
+    tc_calender_accent_min_time: "10",
     tc_todoist_api_token: "",
   };
 
@@ -37,6 +39,14 @@ $(function () {
     } else {
       tc_options.tc_calender = "false";
     }
+    if ($("input[name=calender_accent_checkbox]").prop("checked")) {
+      tc_options.tc_calender_accent = "true";
+    } else {
+      tc_options.tc_calender_accent = "false";
+    }
+    tc_options.tc_calender_accent_min_time = $(
+      "input[name=accent_min_time]"
+    ).val();
     tc_options.tc_todoist_api_token = $("input[name=todoist_api_token]").val();
     chrome.storage.sync.set(tc_options, function () {});
   });
@@ -71,6 +81,15 @@ $(function () {
     } else {
       $("input[name=calender_checkbox]").prop("checked", false);
     }
+    if (options.tc_calender_accent == "true") {
+      $("input[name=calender_accent_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_accent_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_accent_min_time)
+      $("input[name=accent_min_time]").val([
+        options.tc_calender_accent_min_time,
+      ]);
     if (options.tc_todoist_api_token)
       $("input[name=todoist_api_token]").val([options.tc_todoist_api_token]);
   });

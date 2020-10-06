@@ -80,6 +80,12 @@
   "tcSettingCalenderName": {
     "message": "Calender"
   },
+  "tcSettingCalenderBackgroundColorName": {
+    "message": "Background Color"
+  },
+  "tcSettingColorChange": {
+    "message": "change the background color."
+  },
   "tcSettingTodoistApiTokenName": {
     "message": "API Token"
   },
