@@ -7,6 +7,10 @@
 
 #tc-wrapper {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-left: 55px;
+  padding-right: 55px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,8 +21,6 @@
 #tc-body {
   vertical-align: top;
   font-size: 0.75rem;
-  padding-left: 55px;
-  padding-right: 55px;
   padding-top: 80px;
   padding-bottom: 40px;
   width: 100%;
@@ -207,19 +209,14 @@
   font: inherit;
 }
 
-#tc-calender-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  z-index: 9;
-}
-
 #tc-calender {
+  position: relative;
   display: grid;
   width: 100%;
   max-width: 800px;
   margin-top: -32px;
   margin-bottom: 40px;
+  font-size: 0.75rem;
 }
 
 #tc-calender #month-col-wrapper,
@@ -271,4 +268,51 @@
 #tc-calender .content-col:last-child {
   border-right: 1px solid #ddd;
   border-bottom-right-radius: 4px;
+}
+
+.tc-calender-arrow {
+  position: absolute;
+  display: inline-block;
+  color: #000;
+  vertical-align: middle;
+  text-decoration: none;
+  width: 24px;
+  height: 24px;
+}
+.tc-calender-arrow::before,
+.tc-calender-arrow::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  content: "";
+  vertical-align: middle;
+}
+.triangle-in-circle::before {
+  width: 24px;
+  height: 24px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background: #999;
+}
+.triangle-in-circle::after {
+  left: 10px;
+  box-sizing: border-box;
+  width: 6px;
+  height: 6px;
+  border: 6px solid transparent;
+  border-left: 6px solid #fff;
+}
+#tc-calender-next,
+#tc-calender-prev {
+  top: calc(50% - 12px);
+  cursor: pointer;
+}
+#tc-calender-next {
+  right: -28px;
+}
+#tc-calender-prev {
+  left: -28px;
+  transform: scale(-1, 1);
 }

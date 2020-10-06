@@ -118,7 +118,11 @@ $(function () {
   const defaultCalender = "false"; // 見積時間カレンダー使用の初期値
   const defaultTodoistApiToken = ""; // APIトークンの初期値
 
-  const numberDatesPerPageFull = 15;
+  const numberPerPageMax = 15;
+
+  let numberPerPage;
+  let tcCalenderPage = 0;
+
   const tcCalenderCheckIntervalTime = 1000;
 
   const debugMode = false; // ログ出力する場合はtrue
@@ -143,10 +147,10 @@ $(function () {
         if (debugMode) console.log("[tc-calender]check start");
         // TC本体がない場合は終了
         if (!$("#tc-wrapper").length) {
-          if ($("#tc-calender-wrapper").length)
-            $("#tc-calender-wrapper").remove();
+          if ($("#tc-calender").length) $("#tc-calender").remove();
           return false;
         }
+
         // データの取得に失敗した場合は終了
         if (!(await todoistApi.load())) {
           if (debugMode) console.log("[tc-calender]check: load error");
@@ -161,7 +165,7 @@ $(function () {
         if (
           taskContent == JSON.stringify(todoistApi.tasks) &&
           labelContent == JSON.stringify(todoistApi.labels) &&
-          $("#tc-calender-wrapper").length
+          $("#tc-calender").length
         ) {
           if (debugMode)
             console.log("[tc-calender]check end: data is updated.");
@@ -178,11 +182,16 @@ $(function () {
       const view = function () {
         if (debugMode) console.log("[tc-calender]view start");
 
+        // ウィンドウ幅に応じて1ページに表示する日数をセット
+        numberPerPage = getNumberPerPage();
+        if (debugMode)
+          console.log("Page: ", tcCalenderPage, "Number: ", numberPerPage);
+
         let tc_calender_html = '<div id="content-col-wrapper">';
         let d = new Date();
+        d.setDate(d.getDate() + 1 + tcCalenderPage * numberPerPage);
         let months = {};
-        for (let i = 1; i <= numberDatesPerPageFull; i++) {
-          d.setDate(d.getDate() + 1);
+        for (let i = 1; i <= numberPerPage; i++) {
           const fd =
             d.getFullYear() +
             "-" +
@@ -211,6 +220,7 @@ $(function () {
             (times / 60).toFixed(1) +
             " h" +
             "</div>";
+          d.setDate(d.getDate() + 1);
         }
 
         month_html = '<div id="month-col-wrapper">';
@@ -229,26 +239,48 @@ $(function () {
         }
         month_html += "</div>";
         tc_calender_ele = $(
-          '<div id="tc-calender-wrapper"><div id="tc-calender">' +
+          '<div id="tc-calender"><span id="tc-calender-next" class="tc-calender-arrow triangle-in-circle"></span><span id="tc-calender-prev" class="tc-calender-arrow triangle-in-circle"></span>' +
             month_html +
             tc_calender_html +
-            "</div></div>"
+            "</div>"
         );
 
         // html挿入
         if ($("#tc-wrapper").length) {
-          if ($("#tc-calender-wrapper").length)
-            $("#tc-calender-wrapper").remove();
+          if ($("#tc-calender").length) $("#tc-calender").remove();
           $("#tc-wrapper").append(tc_calender_ele);
           taskContent = JSON.stringify(todoistApi.tasks);
           labelContent = JSON.stringify(todoistApi.labels);
         }
       };
 
+      const getNumberPerPage = () => {
+        const w = $(window).width();
+        let offset = 0;
+        if (w > 750 && !$("left_menu").length) offset = -305;
+        const cw = w - 110 + offset;
+        return Math.min(numberPerPageMax, Math.floor(cw / 50));
+      };
+
       // 定期実行
       setInterval(function () {
         check();
       }, tcCalenderCheckIntervalTime);
+
+      // 矢印がクリックされた時、ページを変更してビューを再構築
+      $(document).on("click", "#tc-calender-next", function () {
+        if (debugMode) console.log("[tc-calender]arrow-prev click!");
+        tcCalenderPage++;
+        view();
+      });
+      $(document).on("click", "#tc-calender-prev", function () {
+        if (debugMode) console.log("[tc-calender]arrow-prev click!");
+        tcCalenderPage--;
+        view();
+      });
+
+      // ウィンドウ幅が変わった場合にビューを更新
+      $(window).resize(() => view());
     }
   );
 });
