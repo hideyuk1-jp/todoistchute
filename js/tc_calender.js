@@ -115,11 +115,11 @@ class TodoistApi {
 }
 
 $(function () {
-  const defaultCalender = "true"; // 見積時間カレンダー使用の初期値
+  const defaultCalender = "false"; // 見積時間カレンダー使用の初期値
   const defaultTodoistApiToken = ""; // APIトークンの初期値
 
   const numberDatesPerPageFull = 15;
-  const tcCalenderCheckIntervalTime = 300;
+  const tcCalenderCheckIntervalTime = 1000;
 
   const debugMode = false; // ログ出力する場合はtrue
 
@@ -239,7 +239,7 @@ $(function () {
         if ($("#tc-wrapper").length) {
           if ($("#tc-calender-wrapper").length)
             $("#tc-calender-wrapper").remove();
-          $("#tc-wrapper").after(tc_calender_ele);
+          $("#tc-wrapper").append(tc_calender_ele);
           taskContent = JSON.stringify(todoistApi.tasks);
           labelContent = JSON.stringify(todoistApi.labels);
         }

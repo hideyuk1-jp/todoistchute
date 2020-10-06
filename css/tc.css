@@ -8,6 +8,8 @@
 #tc-wrapper {
   width: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-bottom: -80px;
   z-index: 9;
@@ -209,7 +211,6 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: -80px;
   z-index: 9;
 }
 
@@ -217,7 +218,7 @@
   display: grid;
   width: 100%;
   max-width: 800px;
-  margin-top: 48px;
+  margin-top: -32px;
   margin-bottom: 40px;
 }
 
