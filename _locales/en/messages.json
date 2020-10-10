@@ -89,6 +89,18 @@
   "tcSettingTodoistApiTokenName": {
     "message": "API Token"
   },
+  "tcSettingTodoistApiTokenMemo1": {
+    "message": "if you use Calender, API Token is required."
+  },
+  "tcSettingTodoistApiTokenMemo2": {
+    "message": "API Token is shown in Todoist Settings page. ("
+  },
+  "tcSettingTodoistApiTokenLink": {
+    "message": "Settings/Integrations"
+  },
+  "tcSettingTodoistApiTokenMemo3": {
+    "message": ")"
+  },
   "tcSettingLinkInTaskName": {
     "message": "Link in Task"
   },

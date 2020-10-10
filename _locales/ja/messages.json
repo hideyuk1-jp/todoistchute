@@ -86,9 +86,20 @@
   "tcSettingColorChange": {
     "message": "以上は色を変更する"
   },
-
   "tcSettingTodoistApiTokenName": {
     "message": "APIトークン"
+  },
+  "tcSettingTodoistApiTokenMemo1": {
+    "message": "見積時間カレンダーを表示する場合はAPIトークンの入力が必要になります。"
+  },
+  "tcSettingTodoistApiTokenMemo2": {
+    "message": "APIトークンはTodoistの設定ページ ("
+  },
+  "tcSettingTodoistApiTokenLink": {
+    "message": "設定/連携機能"
+  },
+  "tcSettingTodoistApiTokenMemo3": {
+    "message": ") から確認することが出来ます。"
   },
   "tcSettingLinkInTaskName": {
     "message": "タスク内リンク"
