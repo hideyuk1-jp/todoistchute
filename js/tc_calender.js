@@ -71,10 +71,11 @@ class TodoistApi {
         };
       }
       const time = this.calcTime(task);
+      const priority = 5 - task.priority;
       this.tasksByDue[task.due.date].times += time;
-      this.tasksByDue[task.due.date].ptimes[task.priority] += time;
+      this.tasksByDue[task.due.date].ptimes[priority] += time;
       this.tasksByDue[task.due.date].count++;
-      this.tasksByDue[task.due.date].pcount[task.priority]++;
+      this.tasksByDue[task.due.date].pcount[priority]++;
       this.tasksByDue[task.due.date].tasks.push(task);
     });
   }
@@ -119,6 +120,8 @@ $(function () {
   const defaultCalenderAccent = "false"; // 背景色強調の初期値
   const defaultCalenderAccentMinTime = 10; // 背景色強調の下限時間の初期値
   const defaultTodoistApiToken = ""; // APIトークンの初期値
+  const defaultCalenderPriorityTasks = "false"; // 優先度別タスクの初期値
+  const defaultCalenderPriority = "true"; // 優先度別タスクの初期値
 
   const numberPerPageMax = 15;
 
@@ -139,6 +142,11 @@ $(function () {
       tc_calender_accent: defaultCalenderAccent,
       tc_calender_accent_min_time: defaultCalenderAccentMinTime,
       tc_todoist_api_token: defaultTodoistApiToken,
+      tc_calender_priority_tasks: defaultCalenderPriorityTasks,
+      tc_calender_p1: defaultCalenderPriority,
+      tc_calender_p2: defaultCalenderPriority,
+      tc_calender_p3: defaultCalenderPriority,
+      tc_calender_p4: defaultCalenderPriority,
     },
     async function (options) {
       // 見積時間カレンダーを表示しない設定の場合は終了
@@ -204,9 +212,13 @@ $(function () {
             ("00" + d.getDate()).slice(-2);
           let times = 0;
           let count = 0;
+          let ptimes = { 1: 0, 2: 0, 3: 0, 4: 0 };
+          let pcount = { 1: 0, 2: 0, 3: 0, 4: 0 };
           if (fd in todoistApi.tasksByDue) {
             times = todoistApi.tasksByDue[fd].times;
             count = todoistApi.tasksByDue[fd].count;
+            ptimes = todoistApi.tasksByDue[fd].ptimes;
+            pcount = todoistApi.tasksByDue[fd].pcount;
           }
           if (d.getMonth() + 1 in months) {
             months[d.getMonth() + 1]++;
@@ -222,15 +234,37 @@ $(function () {
             tc_calender_html += '<div class="content-col">';
           }
           tc_calender_html +=
+            "<div>" +
             d.getDate() +
             " " +
             ["日", "月", "火", "水", "木", "金", "土"][d.getDay()] +
-            "<br />" +
+            "</div><div>" +
             count +
-            "<br />" +
+            "</div><div>" +
             (times / 60).toFixed(1) +
             " h" +
             "</div>";
+          if (options.tc_calender_priority_tasks == "true") {
+            const p_flag = {
+              1: options.tc_calender_p1,
+              2: options.tc_calender_p2,
+              3: options.tc_calender_p3,
+              4: options.tc_calender_p4,
+            };
+            for (let j = 1; j <= 4; j++) {
+              if (p_flag[j] != "true") continue;
+              tc_calender_html +=
+                '<div class="p' +
+                j +
+                '">' +
+                pcount[j] +
+                "/" +
+                (ptimes[j] / 60).toFixed(1) +
+                "</div>";
+            }
+          }
+          tc_calender_html += "</div>";
+
           d.setDate(d.getDate() + 1);
         }
 

@@ -77,6 +77,18 @@
   "tcSettingShow": {
     "message": "表示する"
   },
+  "tcSettingP1": {
+    "message": "優先度1"
+  },
+  "tcSettingP2": {
+    "message": "優先度2"
+  },
+  "tcSettingP3": {
+    "message": "優先度3"
+  },
+  "tcSettingP4": {
+    "message": "優先度4"
+  },
   "tcSettingCalenderName": {
     "message": "見積時間カレンダー"
   },
@@ -100,6 +112,9 @@
   },
   "tcSettingTodoistApiTokenMemo3": {
     "message": ") から確認することが出来ます。"
+  },
+  "tcSettingCalenderPriorityTasksName": {
+    "message": "優先度別タスク"
   },
   "tcSettingLinkInTaskName": {
     "message": "タスク内リンク"

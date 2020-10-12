@@ -217,7 +217,7 @@
   max-width: 800px;
   margin-top: -32px;
   margin-bottom: 40px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 #tc-calender #month-col-wrapper,
@@ -254,7 +254,7 @@
 }
 
 #tc-calender .content-col {
-  padding: 4px;
+  padding: 4px 0px;
   text-align: center;
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #ddd;
@@ -334,4 +334,17 @@
 #tc-calender-prev {
   left: -24px;
   transform: scale(-1, 1);
+}
+
+#tc-calender .p1 {
+  border-left: 4px solid rgb(209, 69, 59);
+}
+#tc-calender .p2 {
+  border-left: 4px solid rgb(235, 137, 9);
+}
+#tc-calender .p3 {
+  border-left: 4px solid rgb(36, 111, 224);
+}
+#tc-calender .p4 {
+  border-left: 4px solid #ddd;
 }

@@ -77,6 +77,18 @@
   "tcSettingShow": {
     "message": "Show"
   },
+  "tcSettingP1": {
+    "message": "Priority1"
+  },
+  "tcSettingP2": {
+    "message": "Priority2"
+  },
+  "tcSettingP3": {
+    "message": "Priority3"
+  },
+  "tcSettingP4": {
+    "message": "Priority4"
+  },
   "tcSettingCalenderName": {
     "message": "Calender"
   },
@@ -100,6 +112,9 @@
   },
   "tcSettingTodoistApiTokenMemo3": {
     "message": ")"
+  },
+  "tcSettingCalenderPriorityTasksName": {
+    "message": "Tasks by priority"
   },
   "tcSettingLinkInTaskName": {
     "message": "Link in Task"
