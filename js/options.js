@@ -23,6 +23,7 @@ $(function () {
     tc_calender_p2: "true",
     tc_calender_p3: "true",
     tc_calender_p4: "true",
+    tc_calender_untimed_tasks: "false",
   };
 
   //セーブボタンが押されたら、chrome.storageに保存
@@ -77,6 +78,11 @@ $(function () {
       tc_options.tc_calender_p4 = "true";
     } else {
       tc_options.tc_calender_p4 = "false";
+    }
+    if ($("input[name=calender_untimed_tasks_checkbox]").prop("checked")) {
+      tc_options.tc_calender_untimed_tasks = "true";
+    } else {
+      tc_options.tc_calender_untimed_tasks = "false";
     }
 
     chrome.storage.sync.set(tc_options, function () {});
@@ -147,6 +153,11 @@ $(function () {
       $("input[name=calender_p4_checkbox]").prop("checked", true);
     } else {
       $("input[name=calender_p4_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_untimed_tasks == "true") {
+      $("input[name=calender_untimed_tasks_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_untimed_tasks_checkbox]").prop("checked", false);
     }
   });
 });

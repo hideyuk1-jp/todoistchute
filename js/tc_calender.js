@@ -68,36 +68,53 @@ class TodoistApi {
             4: 0,
           },
           tasks: [],
+          untimedCount: 0,
         };
       }
       const time = this.calcTime(task);
       const priority = 5 - task.priority;
-      this.tasksByDue[task.due.date].times += time;
-      this.tasksByDue[task.due.date].ptimes[priority] += time;
+      this.tasksByDue[task.due.date].times += (time ?? 0);
+      this.tasksByDue[task.due.date].ptimes[priority] += (time ?? 0);
       this.tasksByDue[task.due.date].count++;
       this.tasksByDue[task.due.date].pcount[priority]++;
       this.tasksByDue[task.due.date].tasks.push(task);
+      if (time == null)
+        this.tasksByDue[task.due.date].untimedCount++;
     });
   }
 
   calcTime(task) {
-    let total = 0;
+    let t_label;
+    let t_text;
     // ラベルから集計
-    if ("label_ids" in task) total += this.calcTimeFromLabel(task.label_ids);
+    if ("label_ids" in task) t_label = this.calcTimeFromLabel(task.label_ids);
     // タスクテキストから集計
-    total += this.calcTimeFromText(task.content);
-    return total;
+    t_text = this.calcTimeFromText(task.content);
+    if (t_label == null && t_text == null) return null;
+    if (t_label != null && t_text != null) return t_label + t_text;
+    if (t_label !== null) return t_label;
+    return t_text;
   }
 
   calcTimeFromLabel(ids) {
     return ids
       .map((id) => {
         const targetLabel = this.labels.find((label) => label.id === id);
-        return targetLabel !== null
-          ? this.calcTimeFromText(targetLabel.name)
-          : 0;
+        if (targetLabel == null) return null;
+        return this.calcTimeFromText(targetLabel.name);
       })
-      .reduce((acc, val) => acc + val, 0);
+      .reduce((acc, val) => {
+        if (acc == null && val == null) {
+          return null;
+        }
+        if (acc != null && val != null) {
+          return acc + val;
+        }
+        if (acc != null) {
+          return acc;
+        }
+        return val;
+      }, null);
   }
 
   calcTimeFromText(content) {
@@ -107,7 +124,7 @@ class TodoistApi {
     );
     const nums = content.match(regexp);
     return nums == null
-      ? 0
+      ? null
       : nums.reduce(
           (acc, val) => acc + parseInt(val.replace(this.timePrefix, "")),
           0
@@ -122,6 +139,7 @@ $(function () {
   const defaultTodoistApiToken = ""; // APIトークンの初期値
   const defaultCalenderPriorityTasks = "false"; // 優先度別タスクの初期値
   const defaultCalenderPriority = "true"; // 優先度別タスクの初期値
+  const defaultCalenderUntimedTasks = "false"; // 時間未設定タスクの初期値
 
   const numberPerPageMax = 15;
 
@@ -130,7 +148,7 @@ $(function () {
 
   const tcCalenderCheckIntervalTime = 1000;
 
-  const debugMode = false; // ログ出力する場合はtrue
+  const debugMode = true; // ログ出力する場合はtrue
 
   let taskContent = "";
   let labelContent = "";
@@ -147,6 +165,7 @@ $(function () {
       tc_calender_p2: defaultCalenderPriority,
       tc_calender_p3: defaultCalenderPriority,
       tc_calender_p4: defaultCalenderPriority,
+      tc_calender_untimed_tasks: defaultCalenderUntimedTasks,
     },
     async function (options) {
       // 見積時間カレンダーを表示しない設定の場合は終了
@@ -185,6 +204,7 @@ $(function () {
         }
         // 予定日ごとのタスクデータを構築
         todoistApi.build();
+        if (debugMode) console.log("[tc-calender]build: data:", todoistApi.tasksByDue);
         //　表示
         view();
         return true;
@@ -214,11 +234,13 @@ $(function () {
           let count = 0;
           let ptimes = { 1: 0, 2: 0, 3: 0, 4: 0 };
           let pcount = { 1: 0, 2: 0, 3: 0, 4: 0 };
+          let untimedCount = 0;
           if (fd in todoistApi.tasksByDue) {
             times = todoistApi.tasksByDue[fd].times;
             count = todoistApi.tasksByDue[fd].count;
             ptimes = todoistApi.tasksByDue[fd].ptimes;
             pcount = todoistApi.tasksByDue[fd].pcount;
+            untimedCount = todoistApi.tasksByDue[fd].untimedCount;
           }
           if (d.getMonth() + 1 in months) {
             months[d.getMonth() + 1]++;
@@ -244,6 +266,7 @@ $(function () {
             (times / 60).toFixed(1) +
             " h" +
             "</div>";
+          // 優先度別タスク数と時間の表示
           if (options.tc_calender_priority_tasks == "true") {
             const p_flag = {
               1: options.tc_calender_p1,
@@ -262,6 +285,10 @@ $(function () {
                 (ptimes[j] / 60).toFixed(1) +
                 "</div>";
             }
+          }
+          // 時間未設定タスク数の表示
+          if (options.tc_calender_untimed_tasks == "true" && untimedCount > 0) {
+            tc_calender_html += '<div class="untimed-count"><span>' + untimedCount + '</span></div>';
           }
           tc_calender_html += "</div>";
 

@@ -116,6 +116,10 @@
   "tcSettingCalenderPriorityTasksName": {
     "message": "Tasks by priority"
   },
+  "tcSettingCalenderUntimedTasksName": {
+    "message": "Untimed tasks"
+  },
+
   "tcSettingLinkInTaskName": {
     "message": "Link in Task"
   },
