@@ -148,7 +148,7 @@ $(function () {
 
   const tcCalenderCheckIntervalTime = 1000;
 
-  const debugMode = true; // ログ出力する場合はtrue
+  const debugMode = false; // ログ出力する場合はtrue
 
   let taskContent = "";
   let labelContent = "";
