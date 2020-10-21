@@ -259,7 +259,15 @@ $(function () {
             "<div>" +
             d.getDate() +
             " " +
-            ["日", "月", "火", "水", "木", "金", "土"][d.getDay()] +
+            [
+              chrome.i18n.getMessage("sundayShort"),
+              chrome.i18n.getMessage("mondayShort"),
+              chrome.i18n.getMessage("tuesdayShort"),
+              chrome.i18n.getMessage("wednesdayShort"),
+              chrome.i18n.getMessage("thursdayShort"),
+              chrome.i18n.getMessage("fridayShort"),
+              chrome.i18n.getMessage("saturdayShort")
+            ][d.getDay()] +
             "</div><div>" +
             count +
             "</div><div>" +
@@ -298,14 +306,14 @@ $(function () {
         month_html = '<div id="month-col-wrapper">';
         let cur = 1;
         for (let key in months) {
+          const monthName = chrome.i18n.getMessage("month" + key);
           month_html +=
             '<div class="month-col" style="grid-column:' +
             cur +
             "/" +
             (cur + months[key]) +
             ';">' +
-            key +
-            "月" +
+            monthName +
             "</div>";
           cur += months[key];
         }

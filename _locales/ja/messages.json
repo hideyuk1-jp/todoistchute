@@ -23,6 +23,63 @@
   "tomorrow": {
     "message": "明日"
   },
+  "month1": {
+    "message": "1月"
+  },
+  "month2": {
+    "message": "2月"
+  },
+  "month3": {
+    "message": "3月"
+  },
+  "month4": {
+    "message": "4月"
+  },
+  "month5": {
+    "message": "5月"
+  },
+  "month6": {
+    "message": "6月"
+  },
+  "month7": {
+    "message": "7月"
+  },
+  "month8": {
+    "message": "8月"
+  },
+  "month9": {
+    "message": "9月"
+  },
+  "month10": {
+    "message": "10月"
+  },
+  "month11": {
+    "message": "11月"
+  },
+  "month12": {
+    "message": "12月"
+  },
+  "sundayShort": {
+    "message": "日"
+  },
+  "mondayShort": {
+    "message": "月"
+  },
+  "tuesdayShort": {
+    "message": "火"
+  },
+  "wednesdayShort": {
+    "message": "水"
+  },
+  "thursdayShort": {
+    "message": "木"
+  },
+  "fridayShort": {
+    "message": "金"
+  },
+  "saturdayShort": {
+    "message": "土"
+  },
   "startTimeName": {
     "message": "開始時刻"
   },
