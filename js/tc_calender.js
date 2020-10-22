@@ -8,7 +8,6 @@ class TodoistApi {
   tasks = [];
   tasksByDue = {};
   labels = [];
-  loadOk = false;
 
   constructor(token) {
     this.token = token;
@@ -18,44 +17,37 @@ class TodoistApi {
   async load() {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + this.token);
-    await Promise.all([
+    const [loadTasksOk, loadLabelsOk] = await Promise.all([
       fetch(this.tasksUrl, {
         method: "GET",
         headers: myHeaders,
-      }).then(response => {
+      }).then(async response => {
         if (!response.ok) {
-          response.text().then((text) => {
-            console.log("[tc-calender] Task API: Response is not ok: " + text);
-          });
-          this.loadOk = false;
-          return;
+          console.log("[tc-calender] Task API: Response is not ok: " + await response.text());
+          return false;
         }
-        response.json().then(json => {
-          this.tasks = json;
-        });
-        this.loadOk = true;
+        this.tasks = await response.json();
+        return true;
       }).catch(e => {
         console.log("[tc-calender] Task API: " + e.message);
+        return false;
       }),
       fetch(this.labelsUrl, {
         method: "GET",
         headers: myHeaders,
-      }).then(response => {
+      }).then(async response => {
         if (!response.ok) {
-          response.text().then((text) => {
-            console.log("[tc-calender] Label API: Response is not ok: " + text);
-          });
-          this.loadOk = false;
-          return;
+          console.log("[tc-calender] Label API: Response is not ok: " + await response.text());
+          return false;
         }
-        response.json().then(json => {
-          this.labels = json;
-        });
-        this.loadOk = true;
+        this.labels = await response.json();
+        return true;
       }).catch(e => {
         console.log("[tc-calender] Label API: " + e.message);
+        return false;
       }),
     ]);
+    return loadTasksOk && loadLabelsOk;
   }
 
   // 予定日ごとのタスクを構築
@@ -144,7 +136,7 @@ class TodoistApi {
   }
 }
 
-$(function () {
+$(() => {
   const defaultCalender = "false"; // 見積時間カレンダー使用の初期値
   const defaultCalenderAccent = "false"; // 背景色強調の初期値
   const defaultCalenderAccentMinTime = 10; // 背景色強調の下限時間の初期値
@@ -177,23 +169,23 @@ $(function () {
       tc_calender_p4: defaultCalenderPriority,
       tc_calender_untimed_tasks: defaultCalenderUntimedTasks,
     },
-    async function (options) {
+    async (options) => {
       // 見積時間カレンダーを表示しない設定の場合は終了
       if (options.tc_calender == "false") return false;
 
       const todoistApi = new TodoistApi(options.tc_todoist_api_token);
 
       // 定時実行用
-      const check = async function () {
+      const check = async () => {
         if (debugMode) console.log("[tc-calender]check start");
         // TC本体がない場合は終了
         if (!$("#tc-wrapper").length) {
-          if ($("#tc-calender").length) $("#tc-calender").remove();
+          if (debugMode) console.log("[tc-calender]check: tc-wrapper is not exist");
+         if ($("#tc-calender").length) $("#tc-calender").remove();
           return false;
         }
-        await todoistApi.load()
         // データの取得に失敗した場合は終了
-        if (!todoistApi.loadOk) {
+        if (!(await todoistApi.load())) {
           if (debugMode) console.log("[tc-calender]check: load error");
           return false;
         }
@@ -209,7 +201,7 @@ $(function () {
           $("#tc-calender").length
         ) {
           if (debugMode)
-            console.log("[tc-calender]check end: data is updated.");
+            console.log("[tc-calender]check end: data is already updated.");
           return false;
         }
         // 予定日ごとのタスクデータを構築
@@ -221,7 +213,7 @@ $(function () {
       };
 
       // 表示
-      const view = function () {
+      const view = () => {
         if (debugMode) console.log("[tc-calender]view start");
 
         // ウィンドウ幅に応じて1ページに表示する日数をセット
@@ -353,20 +345,18 @@ $(function () {
       };
 
       // １回目実行
-      check();
+      await check();
 
       // 定期実行
-      setInterval(function () {
-        check();
-      }, tcCalenderCheckIntervalTime);
+      setInterval(async () => await check(), tcCalenderCheckIntervalTime);
 
       // 矢印がクリックされた時、ページを変更してビューを再構築
-      $(document).on("click", "#tc-calender-next", function () {
+      $(document).on("click", "#tc-calender-next", () => {
         if (debugMode) console.log("[tc-calender]arrow-prev click!");
         tcCalenderPage++;
         view();
       });
-      $(document).on("click", "#tc-calender-prev", function () {
+      $(document).on("click", "#tc-calender-prev", () => {
         if (debugMode) console.log("[tc-calender]arrow-prev click!");
         tcCalenderPage--;
         view();
