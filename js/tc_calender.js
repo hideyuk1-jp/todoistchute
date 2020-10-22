@@ -1,3 +1,5 @@
+const debugMode = false; // ログ出力する場合はtrue
+
 class TodoistApi {
   timePrefix = "//";
   token;
@@ -6,6 +8,7 @@ class TodoistApi {
   tasks = [];
   tasksByDue = {};
   labels = [];
+  loadOk = false;
 
   constructor(token) {
     this.token = token;
@@ -15,35 +18,44 @@ class TodoistApi {
   async load() {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + this.token);
-    const [taskResponse, labelResponse] = await Promise.all([
+    await Promise.all([
       fetch(this.tasksUrl, {
         method: "GET",
         headers: myHeaders,
+      }).then(response => {
+        if (!response.ok) {
+          response.text().then((text) => {
+            console.log("[tc-calender] Task API: Response is not ok: " + text);
+          });
+          this.loadOk = false;
+          return;
+        }
+        response.json().then(json => {
+          this.tasks = json;
+        });
+        this.loadOk = true;
+      }).catch(e => {
+        console.log("[tc-calender] Task API: " + e.message);
       }),
       fetch(this.labelsUrl, {
         method: "GET",
         headers: myHeaders,
+      }).then(response => {
+        if (!response.ok) {
+          response.text().then((text) => {
+            console.log("[tc-calender] Label API: Response is not ok: " + text);
+          });
+          this.loadOk = false;
+          return;
+        }
+        response.json().then(json => {
+          this.labels = json;
+        });
+        this.loadOk = true;
+      }).catch(e => {
+        console.log("[tc-calender] Label API: " + e.message);
       }),
     ]);
-    if (taskResponse.ok) {
-      this.tasks = await taskResponse.json();
-    } else {
-      taskResponse.text().then((text) => {
-        console.log(
-          "[TodoistChute] Failed to connect todoist task api: " + text
-        );
-      });
-    }
-    if (labelResponse.ok) {
-      this.labels = await labelResponse.json();
-    } else {
-      labelResponse.text().then((text) => {
-        console.log(
-          "[TodoistChute] Failed to connect todoist label api: " + text
-        );
-      });
-    }
-    return taskResponse.ok && labelResponse;
   }
 
   // 予定日ごとのタスクを構築
@@ -148,8 +160,6 @@ $(function () {
 
   const tcCalenderCheckIntervalTime = 1000;
 
-  const debugMode = false; // ログ出力する場合はtrue
-
   let taskContent = "";
   let labelContent = "";
 
@@ -181,9 +191,9 @@ $(function () {
           if ($("#tc-calender").length) $("#tc-calender").remove();
           return false;
         }
-
+        await todoistApi.load()
         // データの取得に失敗した場合は終了
-        if (!(await todoistApi.load())) {
+        if (!todoistApi.loadOk) {
           if (debugMode) console.log("[tc-calender]check: load error");
           return false;
         }
