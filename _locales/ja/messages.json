@@ -149,6 +149,9 @@
   "tcSettingCalenderName": {
     "message": "見積時間カレンダー"
   },
+  "tcSettingCalenderMaybeCharged": {
+    "message": "見積時間カレンダーの機能は現在無料ですが、将来的に有料化する可能性があります。"
+  },
   "tcSettingCalenderBackgroundColorName": {
     "message": "背景色"
   },

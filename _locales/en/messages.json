@@ -149,6 +149,9 @@
   "tcSettingCalenderName": {
     "message": "Calender"
   },
+  "tcSettingCalenderMaybeCharged": {
+    "message": "This Calender feature is currently free, but may be charged in the future."
+  },
   "tcSettingCalenderBackgroundColorName": {
     "message": "Background Color"
   },
