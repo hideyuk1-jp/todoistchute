@@ -23,6 +23,63 @@
   "tomorrow": {
     "message": "Tomorrow"
   },
+  "month1": {
+    "message": "Jan"
+  },
+  "month2": {
+    "message": "Feb"
+  },
+  "month3": {
+    "message": "Mar"
+  },
+  "month4": {
+    "message": "Apr"
+  },
+  "month5": {
+    "message": "May"
+  },
+  "month6": {
+    "message": "Jun"
+  },
+  "month7": {
+    "message": "Jul"
+  },
+  "month8": {
+    "message": "Aug"
+  },
+  "month9": {
+    "message": "Sep"
+  },
+  "month10": {
+    "message": "Oct"
+  },
+  "month11": {
+    "message": "Nov"
+  },
+  "month12": {
+    "message": "Dec"
+  },
+  "sundayShort": {
+    "message": "Sun"
+  },
+  "mondayShort": {
+    "message": "Mon"
+  },
+  "tuesdayShort": {
+    "message": "Tue"
+  },
+  "wednesdayShort": {
+    "message": "Wed"
+  },
+  "thursdayShort": {
+    "message": "Thu"
+  },
+  "fridayShort": {
+    "message": "Fri"
+  },
+  "saturdayShort": {
+    "message": "Sat"
+  },
   "startTimeName": {
     "message": "Start"
   },
@@ -76,6 +133,51 @@
   },
   "tcSettingShow": {
     "message": "Show"
+  },
+  "tcSettingP1": {
+    "message": "Priority1"
+  },
+  "tcSettingP2": {
+    "message": "Priority2"
+  },
+  "tcSettingP3": {
+    "message": "Priority3"
+  },
+  "tcSettingP4": {
+    "message": "Priority4"
+  },
+  "tcSettingCalenderName": {
+    "message": "Calender"
+  },
+  "tcSettingCalenderMaybeCharged": {
+    "message": "This Calender feature is currently free, but may be charged in the future."
+  },
+  "tcSettingCalenderBackgroundColorName": {
+    "message": "Background Color"
+  },
+  "tcSettingColorChange": {
+    "message": "change the background color."
+  },
+  "tcSettingTodoistApiTokenName": {
+    "message": "API Token"
+  },
+  "tcSettingTodoistApiTokenMemo1": {
+    "message": "if you use Calender, API Token is required."
+  },
+  "tcSettingTodoistApiTokenMemo2": {
+    "message": "API Token is shown in Todoist Settings page. ("
+  },
+  "tcSettingTodoistApiTokenLink": {
+    "message": "Settings/Integrations"
+  },
+  "tcSettingTodoistApiTokenMemo3": {
+    "message": ")"
+  },
+  "tcSettingCalenderPriorityTasksName": {
+    "message": "Tasks by priority"
+  },
+  "tcSettingCalenderUntimedTasksName": {
+    "message": "Untimed tasks"
   },
   "tcSettingLinkInTaskName": {
     "message": "Link in Task"

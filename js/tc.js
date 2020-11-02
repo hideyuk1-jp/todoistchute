@@ -3,22 +3,23 @@
  * (c) 2018 hideyuk1 https://hideyuk1.dev
  * License: MIT
  */
+
+debugMode = false; // ログ出力する場合はtrue
+
+var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
+var strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
+var timePrefix = "//"; // 見積時間の接頭辞
+var defaultBeginTime = "09:00"; // 開始時刻の初期値
+var defaultBreakTime = "1"; // 休憩時間の初期値
+var defaultLinkIcon = "false"; // リンクアイコン挿入の初期値
+var defaultTaskBar = "true"; // タスクバー使用の初期値
+
+var tchtml;
+var tcParentId = "#content"; // tcの親要素のID
+var taskListParentId = "#editor"; // タスクリストを内包する要素のID
+var tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
+
 $(function () {
-  debugMode = false; // ログ出力する場合はtrue
-
-  var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
-  var strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
-  var timePrefix = "//"; // 見積時間の接頭辞
-  var defaultBeginTime = "09:00"; // 開始時刻の初期値
-  var defaultBreakTime = "1"; // 休憩時間の初期値
-  var defaultLinkIcon = "false"; // リンクアイコン挿入の初期値
-  var defaultTaskBar = "true"; // タスクバー使用の初期値
-
-  var tchtml;
-  var tcParentId = "#content"; // tcの親要素のID
-  var taskListParentId = "#editor"; // タスクリストを内包する要素のID
-  var tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
-
   var tcCurrentDate = new Date();
   var tcStartDate;
 

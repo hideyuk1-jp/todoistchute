@@ -23,6 +23,63 @@
   "tomorrow": {
     "message": "明日"
   },
+  "month1": {
+    "message": "1月"
+  },
+  "month2": {
+    "message": "2月"
+  },
+  "month3": {
+    "message": "3月"
+  },
+  "month4": {
+    "message": "4月"
+  },
+  "month5": {
+    "message": "5月"
+  },
+  "month6": {
+    "message": "6月"
+  },
+  "month7": {
+    "message": "7月"
+  },
+  "month8": {
+    "message": "8月"
+  },
+  "month9": {
+    "message": "9月"
+  },
+  "month10": {
+    "message": "10月"
+  },
+  "month11": {
+    "message": "11月"
+  },
+  "month12": {
+    "message": "12月"
+  },
+  "sundayShort": {
+    "message": "日"
+  },
+  "mondayShort": {
+    "message": "月"
+  },
+  "tuesdayShort": {
+    "message": "火"
+  },
+  "wednesdayShort": {
+    "message": "水"
+  },
+  "thursdayShort": {
+    "message": "木"
+  },
+  "fridayShort": {
+    "message": "金"
+  },
+  "saturdayShort": {
+    "message": "土"
+  },
   "startTimeName": {
     "message": "開始時刻"
   },
@@ -76,6 +133,51 @@
   },
   "tcSettingShow": {
     "message": "表示する"
+  },
+  "tcSettingP1": {
+    "message": "優先度1"
+  },
+  "tcSettingP2": {
+    "message": "優先度2"
+  },
+  "tcSettingP3": {
+    "message": "優先度3"
+  },
+  "tcSettingP4": {
+    "message": "優先度4"
+  },
+  "tcSettingCalenderName": {
+    "message": "見積時間カレンダー"
+  },
+  "tcSettingCalenderMaybeCharged": {
+    "message": "見積時間カレンダーの機能は現在無料ですが、将来的に有料化する可能性があります。"
+  },
+  "tcSettingCalenderBackgroundColorName": {
+    "message": "背景色"
+  },
+  "tcSettingColorChange": {
+    "message": "以上は色を変更する"
+  },
+  "tcSettingTodoistApiTokenName": {
+    "message": "APIトークン"
+  },
+  "tcSettingTodoistApiTokenMemo1": {
+    "message": "見積時間カレンダーを表示する場合はAPIトークンの入力が必要になります。"
+  },
+  "tcSettingTodoistApiTokenMemo2": {
+    "message": "APIトークンはTodoistの設定ページ ("
+  },
+  "tcSettingTodoistApiTokenLink": {
+    "message": "設定/連携機能"
+  },
+  "tcSettingTodoistApiTokenMemo3": {
+    "message": ") から確認することが出来ます。"
+  },
+  "tcSettingCalenderPriorityTasksName": {
+    "message": "優先度別タスク"
+  },
+  "tcSettingCalenderUntimedTasksName": {
+    "message": "時間未設定タスク"
   },
   "tcSettingLinkInTaskName": {
     "message": "タスク内リンク"

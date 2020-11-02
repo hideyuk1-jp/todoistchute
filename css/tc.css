@@ -7,7 +7,13 @@
 
 #tc-wrapper {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-left: 55px;
+  padding-right: 55px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-bottom: -80px;
   z-index: 9;
@@ -15,8 +21,6 @@
 #tc-body {
   vertical-align: top;
   font-size: 0.75rem;
-  padding-left: 55px;
-  padding-right: 55px;
   padding-top: 80px;
   padding-bottom: 40px;
   width: 100%;
@@ -49,7 +53,6 @@
 #tc-begintime,
 #tc-breaktime {
   padding: 3px;
-  border-radius: 4px;
   border: 1px solid #ddd;
   border-radius: 4px;
   -moz-border-radius: 4px;
@@ -184,7 +187,6 @@
 #tc-body #tc-hour {
   font-size: 1rem;
   font-weight: bold;
-  /*font-family: Hervetica*/
 }
 
 .tc-counted {
@@ -205,4 +207,169 @@
 #tc-body select,
 #tc-body button {
   font: inherit;
+}
+
+/* 見積時間カレンダー */
+#tc-calender {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: 800px;
+  margin-top: -32px;
+  margin-bottom: 40px;
+  font-size: 0.7rem;
+}
+
+#tc-calender #month-col-wrapper,
+#tc-calender #content-col-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
+}
+
+#tc-calender #month-col-wrapper {
+  grid-row: 1;
+}
+
+#tc-calender #content-col-wrapper {
+  grid-row: 2;
+}
+
+#tc-calender .month-col {
+  padding: 4px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+#tc-calender .month-col:first-child {
+  border-top-left-radius: 4px;
+}
+
+#tc-calender .month-col:last-of-type {
+  border-right: 1px solid #ddd;
+  border-top-right-radius: 4px;
+}
+
+#tc-calender .content-col {
+  padding: 4px 0px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+#tc-calender .accent {
+  background-color: #f2dede;
+}
+
+/* ダークテーマ */
+.theme_dark #tc-calender .accent {
+  background-color: #730d0d;
+}
+
+#tc-calender .content-col:first-child {
+  border-bottom-left-radius: 4px;
+}
+
+#tc-calender .content-col:last-child {
+  border-right: 1px solid #ddd;
+  border-bottom-right-radius: 4px;
+}
+
+.tc-calender-arrow {
+  position: absolute;
+  display: inline-block;
+  color: #000;
+  vertical-align: middle;
+  text-decoration: none;
+  width: 24px;
+  height: 24px;
+}
+.tc-calender-arrow::before,
+.tc-calender-arrow::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  content: "";
+  vertical-align: middle;
+}
+.kunoji::before {
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #999;
+  border-right: 1px solid #999;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.triangle-in-circle::before {
+  width: 24px;
+  height: 24px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background: #999;
+}
+.triangle-in-circle::after {
+  left: 10px;
+  box-sizing: border-box;
+  width: 6px;
+  height: 6px;
+  border: 6px solid transparent;
+  border-left: 6px solid #fff;
+}
+#tc-calender-next,
+#tc-calender-prev {
+  top: calc(50% - 12px);
+  cursor: pointer;
+}
+#tc-calender-next {
+  right: -24px;
+}
+#tc-calender-prev {
+  left: -24px;
+  transform: scale(-1, 1);
+}
+
+#tc-calender .p1 {
+  border-left: 4px solid rgb(209, 69, 59);
+}
+#tc-calender .p2 {
+  border-left: 4px solid rgb(235, 137, 9);
+}
+#tc-calender .p3 {
+  border-left: 4px solid rgb(36, 111, 224);
+}
+#tc-calender .p4 {
+  border-left: 4px solid #ddd;
+}
+
+/* 時間未設定タスク */
+#tc-calender .content-col {
+  position: relative;
+}
+.untimed-count {
+  position: absolute;
+  bottom: -22px;
+  left: 0;
+  right: 0;
+}
+.untimed-count span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.untimed-count span:before {
+  content: "";
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 2px;
+  background-image: url('data:image/svg+xml;utf-8,<svg fill="orange" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="_x32_" x="0px" y="0px" viewBox="0 0 512 512" width="11px" height="11px" xml:space="preserve"><g><path class="st0" d="M505.095,407.125L300.77,53.208c-9.206-15.944-26.361-25.849-44.774-25.849   c-18.412,0-35.552,9.905-44.751,25.849L6.905,407.109c-9.206,15.944-9.206,35.746,0,51.69   c9.206,15.944,26.354,25.842,44.758,25.842h408.674c18.405,0,35.568-9.897,44.759-25.842   C514.302,442.855,514.302,423.053,505.095,407.125z M256.004,426.437c-17.668,0-32.013-14.33-32.013-32.004   c0-17.668,14.345-31.997,32.013-31.997c17.667,0,31.997,14.329,31.997,31.997C288.001,412.108,273.671,426.437,256.004,426.437z    M275.72,324.011c0,10.89-8.834,19.709-19.716,19.709c-10.898,0-19.717-8.818-19.717-19.709l-12.296-144.724   c0-17.676,14.345-32.005,32.013-32.005c17.667,0,31.997,14.33,31.997,32.005L275.72,324.011z"/></g></svg>');
+  background-size: contain;
 }

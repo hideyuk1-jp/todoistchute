@@ -14,6 +14,16 @@ $(function () {
     tc_breaktime: "1",
     tc_linkicon: "false",
     tc_taskbar: "true",
+    tc_calender: "false",
+    tc_todoist_api_token: "",
+    tc_calender_accent: "false",
+    tc_calender_accent_min_time: "10",
+    tc_calender_priority_tasks: "false",
+    tc_calender_p1: "true",
+    tc_calender_p2: "true",
+    tc_calender_p3: "true",
+    tc_calender_p4: "true",
+    tc_calender_untimed_tasks: "false",
   };
 
   //セーブボタンが押されたら、chrome.storageに保存
@@ -30,6 +40,51 @@ $(function () {
     } else {
       tc_options.tc_taskbar = "false";
     }
+    if ($("input[name=calender_checkbox]").prop("checked")) {
+      tc_options.tc_calender = "true";
+    } else {
+      tc_options.tc_calender = "false";
+    }
+    if ($("input[name=calender_accent_checkbox]").prop("checked")) {
+      tc_options.tc_calender_accent = "true";
+    } else {
+      tc_options.tc_calender_accent = "false";
+    }
+    tc_options.tc_calender_accent_min_time = $(
+      "input[name=accent_min_time]"
+    ).val();
+    tc_options.tc_todoist_api_token = $("input[name=todoist_api_token]").val();
+    if ($("input[name=calender_priority_tasks_checkbox]").prop("checked")) {
+      tc_options.tc_calender_priority_tasks = "true";
+    } else {
+      tc_options.tc_calender_priority_tasks = "false";
+    }
+    if ($("input[name=calender_p1_checkbox]").prop("checked")) {
+      tc_options.tc_calender_p1 = "true";
+    } else {
+      tc_options.tc_calender_p1 = "false";
+    }
+    if ($("input[name=calender_p2_checkbox]").prop("checked")) {
+      tc_options.tc_calender_p2 = "true";
+    } else {
+      tc_options.tc_calender_p2 = "false";
+    }
+    if ($("input[name=calender_p3_checkbox]").prop("checked")) {
+      tc_options.tc_calender_p3 = "true";
+    } else {
+      tc_options.tc_calender_p3 = "false";
+    }
+    if ($("input[name=calender_p4_checkbox]").prop("checked")) {
+      tc_options.tc_calender_p4 = "true";
+    } else {
+      tc_options.tc_calender_p4 = "false";
+    }
+    if ($("input[name=calender_untimed_tasks_checkbox]").prop("checked")) {
+      tc_options.tc_calender_untimed_tasks = "true";
+    } else {
+      tc_options.tc_calender_untimed_tasks = "false";
+    }
+
     chrome.storage.sync.set(tc_options, function () {});
   });
 
@@ -57,6 +112,52 @@ $(function () {
       $("input[name=taskbar_checkbox]").prop("checked", true);
     } else {
       $("input[name=taskbar_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender == "true") {
+      $("input[name=calender_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_accent == "true") {
+      $("input[name=calender_accent_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_accent_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_accent_min_time)
+      $("input[name=accent_min_time]").val([
+        options.tc_calender_accent_min_time,
+      ]);
+    if (options.tc_todoist_api_token)
+      $("input[name=todoist_api_token]").val([options.tc_todoist_api_token]);
+    if (options.tc_calender_priority_tasks == "true") {
+      $("input[name=calender_priority_tasks_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_priority_tasks_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_p1 == "true") {
+      $("input[name=calender_p1_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_p1_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_p2 == "true") {
+      $("input[name=calender_p2_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_p2_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_p3 == "true") {
+      $("input[name=calender_p3_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_p3_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_p4 == "true") {
+      $("input[name=calender_p4_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_p4_checkbox]").prop("checked", false);
+    }
+    if (options.tc_calender_untimed_tasks == "true") {
+      $("input[name=calender_untimed_tasks_checkbox]").prop("checked", true);
+    } else {
+      $("input[name=calender_untimed_tasks_checkbox]").prop("checked", false);
     }
   });
 });
