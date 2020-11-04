@@ -188,6 +188,12 @@
   "tcSettingSave": {
     "message": "Save"
   },
+  "tcSettingSaveOk": {
+    "message": "The settings was saved. Please reload the Todoist page to apply the settings."
+  },
+  "tcSettingSaveNg": {
+    "message": "Failed to save the settings."
+  },
   "Overdue": {
     "message": "Overdue"
   }
