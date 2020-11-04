@@ -28,64 +28,77 @@ $(function () {
 
   //セーブボタンが押されたら、chrome.storageに保存
   $("#save").click(function () {
-    tc_options.tc_begintime = $("input[name=begintime]").val();
-    tc_options.tc_breaktime = $("input[name=breaktime]").val();
-    if ($("input[name=linkicon_checkbox]").prop("checked")) {
-      tc_options.tc_linkicon = "true";
-    } else {
-      tc_options.tc_linkicon = "false";
-    }
-    if ($("input[name=taskbar_checkbox]").prop("checked")) {
-      tc_options.tc_taskbar = "true";
-    } else {
-      tc_options.tc_taskbar = "false";
-    }
-    if ($("input[name=calender_checkbox]").prop("checked")) {
-      tc_options.tc_calender = "true";
-    } else {
-      tc_options.tc_calender = "false";
-    }
-    if ($("input[name=calender_accent_checkbox]").prop("checked")) {
-      tc_options.tc_calender_accent = "true";
-    } else {
-      tc_options.tc_calender_accent = "false";
-    }
-    tc_options.tc_calender_accent_min_time = $(
-      "input[name=accent_min_time]"
-    ).val();
-    tc_options.tc_todoist_api_token = $("input[name=todoist_api_token]").val();
-    if ($("input[name=calender_priority_tasks_checkbox]").prop("checked")) {
-      tc_options.tc_calender_priority_tasks = "true";
-    } else {
-      tc_options.tc_calender_priority_tasks = "false";
-    }
-    if ($("input[name=calender_p1_checkbox]").prop("checked")) {
-      tc_options.tc_calender_p1 = "true";
-    } else {
-      tc_options.tc_calender_p1 = "false";
-    }
-    if ($("input[name=calender_p2_checkbox]").prop("checked")) {
-      tc_options.tc_calender_p2 = "true";
-    } else {
-      tc_options.tc_calender_p2 = "false";
-    }
-    if ($("input[name=calender_p3_checkbox]").prop("checked")) {
-      tc_options.tc_calender_p3 = "true";
-    } else {
-      tc_options.tc_calender_p3 = "false";
-    }
-    if ($("input[name=calender_p4_checkbox]").prop("checked")) {
-      tc_options.tc_calender_p4 = "true";
-    } else {
-      tc_options.tc_calender_p4 = "false";
-    }
-    if ($("input[name=calender_untimed_tasks_checkbox]").prop("checked")) {
-      tc_options.tc_calender_untimed_tasks = "true";
-    } else {
-      tc_options.tc_calender_untimed_tasks = "false";
-    }
+    try {
+      tc_options.tc_begintime = $("input[name=begintime]").val();
+      tc_options.tc_breaktime = $("input[name=breaktime]").val();
+      if ($("input[name=linkicon_checkbox]").prop("checked")) {
+        tc_options.tc_linkicon = "true";
+      } else {
+        tc_options.tc_linkicon = "false";
+      }
+      if ($("input[name=taskbar_checkbox]").prop("checked")) {
+        tc_options.tc_taskbar = "true";
+      } else {
+        tc_options.tc_taskbar = "false";
+      }
+      if ($("input[name=calender_checkbox]").prop("checked")) {
+        tc_options.tc_calender = "true";
+      } else {
+        tc_options.tc_calender = "false";
+      }
+      if ($("input[name=calender_accent_checkbox]").prop("checked")) {
+        tc_options.tc_calender_accent = "true";
+      } else {
+        tc_options.tc_calender_accent = "false";
+      }
+      tc_options.tc_calender_accent_min_time = $(
+        "input[name=accent_min_time]"
+      ).val();
+      tc_options.tc_todoist_api_token = $(
+        "input[name=todoist_api_token]"
+      ).val();
+      if ($("input[name=calender_priority_tasks_checkbox]").prop("checked")) {
+        tc_options.tc_calender_priority_tasks = "true";
+      } else {
+        tc_options.tc_calender_priority_tasks = "false";
+      }
+      if ($("input[name=calender_p1_checkbox]").prop("checked")) {
+        tc_options.tc_calender_p1 = "true";
+      } else {
+        tc_options.tc_calender_p1 = "false";
+      }
+      if ($("input[name=calender_p2_checkbox]").prop("checked")) {
+        tc_options.tc_calender_p2 = "true";
+      } else {
+        tc_options.tc_calender_p2 = "false";
+      }
+      if ($("input[name=calender_p3_checkbox]").prop("checked")) {
+        tc_options.tc_calender_p3 = "true";
+      } else {
+        tc_options.tc_calender_p3 = "false";
+      }
+      if ($("input[name=calender_p4_checkbox]").prop("checked")) {
+        tc_options.tc_calender_p4 = "true";
+      } else {
+        tc_options.tc_calender_p4 = "false";
+      }
+      if ($("input[name=calender_untimed_tasks_checkbox]").prop("checked")) {
+        tc_options.tc_calender_untimed_tasks = "true";
+      } else {
+        tc_options.tc_calender_untimed_tasks = "false";
+      }
 
-    chrome.storage.sync.set(tc_options, function () {});
+      chrome.storage.sync.set(tc_options, function () {});
+
+      $(".msg.ok").toggleClass("visible", true);
+    } catch (e) {
+      console.log(e.message);
+      $(".msg.ng").toggleClass("visible", true);
+    }
+    // 5秒後にメッセージ非表示
+    setTimeout(() => {
+      $(".msg").toggleClass("visible", false);
+    }, 10000);
   });
 
   //オプション画面の初期値を設定

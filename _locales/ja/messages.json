@@ -188,6 +188,12 @@
   "tcSettingSave": {
     "message": "保存"
   },
+  "tcSettingSaveOk": {
+    "message": "設定を保存しました。設定を反映するためにTodoistのページを再読み込みしてください。"
+  },
+  "tcSettingSaveNg": {
+    "message": "設定の保存に失敗しました。"
+  },
   "Overdue": {
     "message": "期限切れ"
   }
