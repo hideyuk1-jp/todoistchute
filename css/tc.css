@@ -1,10 +1,5 @@
 @charset "UTF-8";
 
-#content {
-  flex-wrap: wrap;
-  align-content: start;
-}
-
 #tc-wrapper {
   width: 100%;
   max-width: 100%;
@@ -15,13 +10,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: -80px;
+  margin-bottom: -36px;
   z-index: 9;
 }
 #tc-body {
   vertical-align: top;
   font-size: 0.75rem;
-  padding-top: 80px;
+  padding-top: 36px;
   padding-bottom: 40px;
   width: 100%;
   max-width: 800px;
