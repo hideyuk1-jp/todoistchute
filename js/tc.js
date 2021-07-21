@@ -6,159 +6,154 @@
 
 debugMode = false; // ログ出力する場合はtrue
 
-var strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
-var strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
-var timePrefix = "//"; // 見積時間の接頭辞
-var defaultBeginTime = "09:00"; // 開始時刻の初期値
-var defaultBreakTime = "1"; // 休憩時間の初期値
-var defaultLinkIcon = "false"; // リンクアイコン挿入の初期値
-var defaultTaskBar = "true"; // タスクバー使用の初期値
+const strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
+const strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
+const defaultBeginTime = "09:00"; // 開始時刻の初期値
+const defaultBreakTime = "1"; // 休憩時間の初期値
+const defaultLinkIcon = "false"; // リンクアイコン挿入の初期値
+const defaultTaskBar = "true"; // タスクバー使用の初期値
 
-var tchtml;
-var tcParentId = "#content"; // tcの親要素のID
-var taskListParentId = "#editor"; // タスクリストを内包する要素のID
-var tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
+let tchtml;
+const tcParentId = "#content"; // tcの親要素のID
+const taskListParentId = "#editor"; // タスクリストを内包する要素のID
+const tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
 
-$(function () {
-  var tcCurrentDate = new Date();
-  var tcStartDate;
+$(async function () {
+  let tcCurrentDate = new Date();
+  let tcStartDate;
 
-  var taskContent = null;
-  var tcWidth = null;
+  let taskContent = null;
+  let tcWidth = null;
 
-  var tc_taskbar;
+  let tc_taskbar;
 
-  // 設定をchrome.storageから読込
-  chrome.storage.sync.get(
-    {
-      tc_begintime: defaultBeginTime,
-      tc_breaktime: defaultBreakTime,
-      tc_linkicon: defaultLinkIcon,
-      tc_taskbar: defaultTaskBar,
-    },
-    function (options) {
-      // 休憩時間がhh:mm形式の場合
-      var brtime = options.tc_breaktime.match(
-        /^(0?[0-9]|1[0-9]|2[0-4]):(0?[0-9]|[1-5][0-9])$/
+  const getOptionsFromChromeStorage = async () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get(
+        {
+          tc_begintime: defaultBeginTime,
+          tc_breaktime: defaultBreakTime,
+          tc_linkicon: defaultLinkIcon,
+          tc_taskbar: defaultTaskBar,
+        },
+        resolve
       );
-      if (brtime)
-        options.tc_breaktime =
-          Math.round(
-            (parseFloat(brtime[1]) + parseFloat(brtime[2]) / 60) * 100
-          ) / 100;
+    }).then((data) => data);
+  };
+  const options = await getOptionsFromChromeStorage();
 
-      // 挿入される要素
-      tchtml =
-        '<div id="tc-wrapper"><div id="tc-body"><div id="tc-tasknum" class="tc-item"><h2>' +
-        chrome.i18n.getMessage("remainedTaskName") +
-        '</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>' +
-        chrome.i18n.getMessage("totalTimeName") +
-        '</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>' +
-        chrome.i18n.getMessage("finishTimeName") +
-        '</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> ' +
-        chrome.i18n.getMessage("dateSelectName") +
-        ': <select id="tc-date"><option value="ALL">' +
-        strall +
-        "</option></select>　" +
-        chrome.i18n.getMessage("startTimeName") +
-        ': <input type="checkbox" name="tc-cbbegintime" id="tc-cbbegintime" /><input type="time" name="tc-begintime" id="tc-begintime" value="' +
-        options.tc_begintime +
-        '" disabled />　' +
-        chrome.i18n.getMessage("breakTimeName") +
-        ': <input type="checkbox" name="tc-cbbreaktime" id="tc-cbbreaktime" /><input type="number" step="0.01" name="tc-breaktime" id="tc-breaktime" value="' +
-        options.tc_breaktime +
-        '" disabled /> h</div><div id="tc-taskbar" style="display:flex"></div></div></div>';
-
-      // フラグがtrueであればリンクアイコンのcssを挿入
-      if (options.tc_linkicon == "true")
-        $("head").append(
-          '<style type="text/css"><!-- .task_content a:after {content: "";display: inline-block;width: 14px;height: 14px;margin-left: 4px;background-image: url(\'data:image/svg+xml;utf-8,<svg version="1.1" fill="orange" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="14px" height="14px" viewBox="0 0 512 512" xml:space="preserve"><g><path class="st0" d="M509.445,113.129c-2.547-13.219-7.047-26.141-13.453-38.359c-6.391-12.203-14.75-23.641-24.938-33.828		c-13.563-13.578-29.406-23.875-46.265-30.719c-25.297-10.219-52.828-12.781-79.266-7.656c-13.219,2.563-26.156,7-38.359,13.422		c-12.172,6.422-23.641,14.75-33.828,24.953l-66.25,66.25c-13.375,13.344-13.375,35.047,0,48.391s35.031,13.344,48.391,0		l66.25-66.281c7.031-7,15.016-12.172,23.594-15.672c12.844-5.203,27.031-6.531,40.547-3.906c6.75,1.313,13.328,3.594,19.531,6.844		c6.188,3.25,12,7.469,17.281,12.734c7.031,7.078,12.187,15.047,15.687,23.609c5.203,12.844,6.531,27.047,3.906,40.547		c-1.313,6.766-3.594,13.344-6.828,19.516c-3.281,6.219-7.484,12.031-12.765,17.313l-66.25,66.234		c-13.359,13.359-13.359,35.047,0,48.391s35.016,13.344,48.375,0l66.25-66.265c13.594-13.563,23.875-29.406,30.703-46.266		C512.008,167.083,514.555,139.551,509.445,113.129z"></path>	<path class="st0" d="M256.54,356.426l-66.266,66.266c-7.047,7.016-15.031,12.188-23.594,15.672		c-12.844,5.219-27.047,6.547-40.547,3.938c-6.766-1.328-13.328-3.625-19.531-6.859c-6.188-3.266-12-7.5-17.281-12.75		c-7.031-7.063-12.203-15.031-15.688-23.609c-5.203-12.828-6.531-27.031-3.922-40.563c1.313-6.75,3.609-13.328,6.844-19.516		c3.281-6.188,7.484-12,12.766-17.297l66.266-66.25c13.344-13.344,13.344-35.016,0-48.359c-13.375-13.359-35.031-13.359-48.391,0		l-66.25,66.234c-13.594,13.594-23.875,29.406-30.719,46.297c-10.234,25.266-12.781,52.844-7.672,79.219		c2.547,13.219,7.031,26.156,13.453,38.359c6.406,12.203,14.75,23.672,24.938,33.844c13.594,13.578,29.406,23.891,46.266,30.688		c25.281,10.266,52.844,12.813,79.25,7.703c13.234-2.563,26.156-7.047,38.344-13.453c12.203-6.391,23.672-14.75,33.859-24.938		l66.25-66.266c13.344-13.344,13.344-35.016,0-48.359C291.54,343.066,269.883,343.066,256.54,356.426z"></path>	<path class="st0" d="M342.43,169.567c-13.344-13.344-35.016-13.344-48.375,0l-124.516,124.5c-13.344,13.359-13.344,35.016,0,48.359		c13.375,13.375,35.047,13.375,48.391,0l124.5-124.5C355.805,204.567,355.805,182.926,342.43,169.567z"></path></g></svg>\');background-size: contain;}--></style>'
-        );
-
-      tc_taskbar = options.tc_taskbar;
-
-      // タスクや幅に変更があれば時間計算を実行
-      var check = function () {
-        curTaskContent = $(taskListParentId).html();
-        // タスクアイテムが変わったら時間計測を実行
-        if (taskContent != curTaskContent) {
-          calcTime();
-          taskContent = curTaskContent;
-          tcWidth = $("#tc-wrapper").width();
-          return true;
-        }
-
-        // widthが変わったら時間計測を実行
-        if (tcWidth != $("#tc-wrapper").width()) {
-          calcTime();
-          taskContent = curTaskContent;
-          tcWidth = $("#tc-wrapper").width();
-          return true;
-        }
-
-        // 現在時刻が変わったら時間計測を実行
-        var time1 =
-          tcCurrentDate.getHours() +
-          ":" +
-          ("0" + tcCurrentDate.getMinutes()).slice(-2);
-        var date2 = new Date();
-        var time2 =
-          date2.getHours() + ":" + ("0" + date2.getMinutes()).slice(-2);
-        if (time1 != time2) {
-          calcTime();
-          return true;
-        }
-      };
-
-      // 時間計算を定期実行
-      setInterval(function () {
-        check();
-      }, tcCheckIntervalTime);
-
-      // 日付が変更された時
-      $(document).on("change", "#tc-date", function () {
-        if (debugMode) console.log("date change!");
-        calcTime();
-      });
-
-      // 開始時刻や休憩時間が変更された時
-      $(document).on("change", "#tc-begintime", function () {
-        if (debugMode) console.log("begintime change!");
-        calcTime();
-      });
-      $(document).on("change", "#tc-breaktime", function () {
-        if (debugMode) console.log("breaktime change!");
-        calcTime();
-      });
-
-      // 開始時刻や休憩時間のチェックボックスがクリックされた時
-      $(document).on("click", "#tc-cbbegintime", function () {
-        if (debugMode) console.log("begintime checkbox click!");
-        $("#tc-begintime").prop(
-          "disabled",
-          !$("#tc-cbbegintime").prop("checked")
-        );
-        calcTime();
-      });
-      $(document).on("click", "#tc-cbbreaktime", function () {
-        if (debugMode) console.log("breaktime checkbox click!");
-        $("#tc-breaktime").prop(
-          "disabled",
-          !$("#tc-cbbreaktime").prop("checked")
-        );
-        calcTime();
-      });
-
-      // タスクバーのタスクがクリックされた時
-      $(document).on("click", "#tc-taskbar .task", function () {
-        if (debugMode) console.log("taskbar task click!");
-        $("html,body").scrollTop(
-          $(`.task_list_item[data-item-id="${$(this).data("target")}"`).offset()
-            .top - $("#top_bar").height()
-        );
-      });
-    }
+  // 休憩時間がhh:mm形式の場合
+  var brtime = options.tc_breaktime.match(
+    /^(0?[0-9]|1[0-9]|2[0-4]):(0?[0-9]|[1-5][0-9])$/
   );
+  if (brtime)
+    options.tc_breaktime =
+      Math.round((parseFloat(brtime[1]) + parseFloat(brtime[2]) / 60) * 100) /
+      100;
+
+  // 挿入される要素
+  tchtml =
+    '<div id="tc-wrapper"><div id="tc-body"><div id="tc-tasknum" class="tc-item"><h2>' +
+    chrome.i18n.getMessage("remainedTaskName") +
+    '</h2><div><span id="tc-cnt">-</span></div></div><div id="tc-totaltime" class="tc-item"><h2>' +
+    chrome.i18n.getMessage("totalTimeName") +
+    '</h2><div><span id="tc-hour">-</span></div></div><div id="tc-finishtime" class="tc-item"><h2>' +
+    chrome.i18n.getMessage("finishTimeName") +
+    '</h2><div><span id="tc-endtime">-</span></div></div><div id="tc-settingitems" class="tc-item"> ' +
+    chrome.i18n.getMessage("dateSelectName") +
+    ': <select id="tc-date"><option value="ALL">' +
+    strall +
+    "</option></select>　" +
+    chrome.i18n.getMessage("startTimeName") +
+    ': <input type="checkbox" name="tc-cbbegintime" id="tc-cbbegintime" /><input type="time" name="tc-begintime" id="tc-begintime" value="' +
+    options.tc_begintime +
+    '" disabled />　' +
+    chrome.i18n.getMessage("breakTimeName") +
+    ': <input type="checkbox" name="tc-cbbreaktime" id="tc-cbbreaktime" /><input type="number" step="0.01" name="tc-breaktime" id="tc-breaktime" value="' +
+    options.tc_breaktime +
+    '" disabled /> h</div><div id="tc-taskbar" style="display:flex"></div></div></div>';
+
+  // フラグがtrueであればリンクアイコンのcssを挿入
+  if (options.tc_linkicon == "true")
+    $("head").append(
+      '<style type="text/css"><!-- .task_content a:after {content: "";display: inline-block;width: 14px;height: 14px;margin-left: 4px;background-image: url(\'data:image/svg+xml;utf-8,<svg version="1.1" fill="orange" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="14px" height="14px" viewBox="0 0 512 512" xml:space="preserve"><g><path class="st0" d="M509.445,113.129c-2.547-13.219-7.047-26.141-13.453-38.359c-6.391-12.203-14.75-23.641-24.938-33.828		c-13.563-13.578-29.406-23.875-46.265-30.719c-25.297-10.219-52.828-12.781-79.266-7.656c-13.219,2.563-26.156,7-38.359,13.422		c-12.172,6.422-23.641,14.75-33.828,24.953l-66.25,66.25c-13.375,13.344-13.375,35.047,0,48.391s35.031,13.344,48.391,0		l66.25-66.281c7.031-7,15.016-12.172,23.594-15.672c12.844-5.203,27.031-6.531,40.547-3.906c6.75,1.313,13.328,3.594,19.531,6.844		c6.188,3.25,12,7.469,17.281,12.734c7.031,7.078,12.187,15.047,15.687,23.609c5.203,12.844,6.531,27.047,3.906,40.547		c-1.313,6.766-3.594,13.344-6.828,19.516c-3.281,6.219-7.484,12.031-12.765,17.313l-66.25,66.234		c-13.359,13.359-13.359,35.047,0,48.391s35.016,13.344,48.375,0l66.25-66.265c13.594-13.563,23.875-29.406,30.703-46.266		C512.008,167.083,514.555,139.551,509.445,113.129z"></path>	<path class="st0" d="M256.54,356.426l-66.266,66.266c-7.047,7.016-15.031,12.188-23.594,15.672		c-12.844,5.219-27.047,6.547-40.547,3.938c-6.766-1.328-13.328-3.625-19.531-6.859c-6.188-3.266-12-7.5-17.281-12.75		c-7.031-7.063-12.203-15.031-15.688-23.609c-5.203-12.828-6.531-27.031-3.922-40.563c1.313-6.75,3.609-13.328,6.844-19.516		c3.281-6.188,7.484-12,12.766-17.297l66.266-66.25c13.344-13.344,13.344-35.016,0-48.359c-13.375-13.359-35.031-13.359-48.391,0		l-66.25,66.234c-13.594,13.594-23.875,29.406-30.719,46.297c-10.234,25.266-12.781,52.844-7.672,79.219		c2.547,13.219,7.031,26.156,13.453,38.359c6.406,12.203,14.75,23.672,24.938,33.844c13.594,13.578,29.406,23.891,46.266,30.688		c25.281,10.266,52.844,12.813,79.25,7.703c13.234-2.563,26.156-7.047,38.344-13.453c12.203-6.391,23.672-14.75,33.859-24.938		l66.25-66.266c13.344-13.344,13.344-35.016,0-48.359C291.54,343.066,269.883,343.066,256.54,356.426z"></path>	<path class="st0" d="M342.43,169.567c-13.344-13.344-35.016-13.344-48.375,0l-124.516,124.5c-13.344,13.359-13.344,35.016,0,48.359		c13.375,13.375,35.047,13.375,48.391,0l124.5-124.5C355.805,204.567,355.805,182.926,342.43,169.567z"></path></g></svg>\');background-size: contain;}--></style>'
+    );
+
+  tc_taskbar = options.tc_taskbar;
+
+  // タスクや幅に変更があれば時間計算を実行
+  var check = function () {
+    curTaskContent = $(taskListParentId).html();
+    // タスクアイテムが変わったら時間計測を実行
+    if (taskContent != curTaskContent) {
+      calcTime();
+      taskContent = curTaskContent;
+      tcWidth = $("#tc-wrapper").width();
+      return true;
+    }
+
+    // widthが変わったら時間計測を実行
+    if (tcWidth != $("#tc-wrapper").width()) {
+      calcTime();
+      taskContent = curTaskContent;
+      tcWidth = $("#tc-wrapper").width();
+      return true;
+    }
+
+    // 現在時刻が変わったら時間計測を実行
+    var time1 =
+      tcCurrentDate.getHours() +
+      ":" +
+      ("0" + tcCurrentDate.getMinutes()).slice(-2);
+    var date2 = new Date();
+    var time2 = date2.getHours() + ":" + ("0" + date2.getMinutes()).slice(-2);
+    if (time1 != time2) {
+      calcTime();
+      return true;
+    }
+  };
+
+  // 時間計算を定期実行
+  setInterval(function () {
+    check();
+  }, tcCheckIntervalTime);
+
+  // 日付が変更された時
+  $(document).on("change", "#tc-date", function () {
+    if (debugMode) console.log("date change!");
+    calcTime();
+  });
+
+  // 開始時刻や休憩時間が変更された時
+  $(document).on("change", "#tc-begintime", function () {
+    if (debugMode) console.log("begintime change!");
+    calcTime();
+  });
+  $(document).on("change", "#tc-breaktime", function () {
+    if (debugMode) console.log("breaktime change!");
+    calcTime();
+  });
+
+  // 開始時刻や休憩時間のチェックボックスがクリックされた時
+  $(document).on("click", "#tc-cbbegintime", function () {
+    if (debugMode) console.log("begintime checkbox click!");
+    $("#tc-begintime").prop("disabled", !$("#tc-cbbegintime").prop("checked"));
+    calcTime();
+  });
+  $(document).on("click", "#tc-cbbreaktime", function () {
+    if (debugMode) console.log("breaktime checkbox click!");
+    $("#tc-breaktime").prop("disabled", !$("#tc-cbbreaktime").prop("checked"));
+    calcTime();
+  });
+
+  // タスクバーのタスクがクリックされた時
+  $(document).on("click", "#tc-taskbar .task", function () {
+    if (debugMode) console.log("taskbar task click!");
+    $("html,body").scrollTop(
+      $(`.task_list_item[data-item-id="${$(this).data("target")}"`).offset()
+        .top - $("#top_bar").height()
+    );
+  });
 
   // 時間計測
   function calcTime() {
@@ -276,18 +271,18 @@ $(function () {
       // タスクバー表示
       $("#tc-taskbar").css("display", "flex");
       $("#tc-tasknum").css({
-        "border-bottom-left-radius": "0",
-        "-moz-border-bottom-left-radius": "0",
-        "-webkit-border-bottom-left-radius": "0",
-        "-o-border-bottom-left-radius": "0",
-        "-ms-border-bottom-left-radius": "0",
+        borderBottomLeftRadius: "0",
+        mozBorderBottomLeftRadius: "0",
+        webkitBorderBottomLeftRadius: "0",
+        OBorderBottomLeftRadius: "0",
+        msBorderBottomLeftRadius: "0",
       });
       $("#tc-finishtime").css({
-        "border-bottom-right-radius": "0",
-        "-moz-border-bottom-right-radius": "0",
-        "-webkit-border-bottom-right-radius": "0",
-        "-o-border-bottom-right-radius": "0",
-        "-ms-border-bottom-right-radius": "0",
+        borderBottomRightRadius: "0",
+        mozBorderBottomRightRadius: "0",
+        webkitBorderBottomRightRadius: "0",
+        OBorderBottomRightRadius: "0",
+        msBorderBottomRightRadius: "0",
       });
 
       // 合計時間を置換して、タスクバー表示
@@ -297,18 +292,18 @@ $(function () {
       // タスクバー非表示
       $("#tc-taskbar").css("display", "none");
       $("#tc-tasknum").css({
-        "border-bottom-left-radius": "4px",
-        "-moz-border-bottom-left-radius": "4px",
-        "-webkit-border-bottom-left-radius": "4px",
-        "-o-border-bottom-left-radius": "4px",
-        "-ms-border-bottom-left-radius": "4px",
+        borderBottomLeftRadius: "4px",
+        mozBorderBottomLeftRadius: "4px",
+        webkitBorderBottomLeftRadius: "4px",
+        OBorderBottomLeftRadius: "4px",
+        msBorderBottomLeftRadius: "4px",
       });
       $("#tc-finishtime").css({
-        "border-bottom-right-radius": "4px",
-        "-moz-border-bottom-right-radius": "4px",
-        "-webkit-border-bottom-right-radius": "4px",
-        "-o-border-bottom-right-radius": "4px",
-        "-ms-border-bottom-right-radius": "4px",
+        borderBottomRightRadius: "4px",
+        mozBorderBottomRightRadius: "4px",
+        webkitBorderBottomRightRadius: "4px",
+        OBorderBottomRightRadius: "4px",
+        msBorderBottomRightRadius: "4px",
       });
     }
 
@@ -391,27 +386,33 @@ $(function () {
   }
 
   function taskTimeSum(el) {
-    var taskTime = 0;
+    let taskTime = 0;
 
     // ラベルから集計
     $(el)
       .find(".task_list_item__info_tags__label")
-      .each((i, label) => {
-        var labelTmp = $(label).text().replace(timePrefix, "");
-        if ($.isNumeric(labelTmp)) taskTime += parseInt(labelTmp);
+      .each((_, label) => {
+        const match = $(label)
+          .text()
+          .match(
+            /^\/\/((?<hours>\d+(\.\d+)?)(:|h|時間))?((?<minutes>\d+)(m|分)?)?$/
+          );
+        if (!match) return;
+        const { hours = 0, minutes = 0 } = match.groups;
+        taskTime += +hours * 60 + +minutes;
       });
 
     // タスクテキストから集計
-    var regexp = new RegExp(
-      timePrefix.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&") + "(\\d+)",
-      "g"
-    );
-    var textList = $(el).find(".task_content").text().match(regexp);
-    if (!textList) return taskTime;
-    var len = textList.length;
-    for (j = 0; j < len; j++) {
-      textTmp = textList[j].replace(timePrefix, "");
-      if ($.isNumeric(textTmp)) taskTime += parseInt(textTmp);
+    const matches = $(el)
+      .find(".task_content")
+      .text()
+      .matchAll(
+        /\/\/((?<hours>\d+(\.\d+)?)(:|h|時間))?((?<minutes>\d+)(m|分)?)?/g
+      );
+    if (!matches) return taskTime;
+    for (const match of matches) {
+      const { hours = 0, minutes = 0 } = match.groups;
+      taskTime += +hours * 60 + +minutes;
     }
 
     return taskTime;
