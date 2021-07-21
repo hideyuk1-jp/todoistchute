@@ -131,17 +131,16 @@ class TodoistApi {
   }
 
   calcTimeFromText(content) {
-    const regexp = new RegExp(
-      this.timePrefix.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&") + "(\\d+)",
-      "g"
+    let taskTime = 0;
+    const matches = content.matchAll(
+      /\/\/((?<hours>\d+(\.\d+)?)(:|h|時間))?((?<minutes>\d+)(m|分)?)?/g
     );
-    const nums = content.match(regexp);
-    return nums == null
-      ? null
-      : nums.reduce(
-          (acc, val) => acc + parseInt(val.replace(this.timePrefix, "")),
-          0
-        );
+    if (!matches) return taskTime;
+    for (const match of matches) {
+      const { hours = 0, minutes = 0 } = match.groups;
+      taskTime += +hours * 60 + +minutes;
+    }
+    return taskTime;
   }
 }
 
