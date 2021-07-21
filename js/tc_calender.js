@@ -21,31 +21,41 @@ class TodoistApi {
       fetch(this.tasksUrl, {
         method: "GET",
         headers: myHeaders,
-      }).then(async response => {
-        if (!response.ok) {
-          console.log("[tc-calender] Task API: Response is not ok: " + await response.text());
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            console.log(
+              "[tc-calender] Task API: Response is not ok: " +
+                (await response.text())
+            );
+            return false;
+          }
+          this.tasks = await response.json();
+          return true;
+        })
+        .catch((e) => {
+          console.log("[tc-calender] Task API: " + e.message);
           return false;
-        }
-        this.tasks = await response.json();
-        return true;
-      }).catch(e => {
-        console.log("[tc-calender] Task API: " + e.message);
-        return false;
-      }),
+        }),
       fetch(this.labelsUrl, {
         method: "GET",
         headers: myHeaders,
-      }).then(async response => {
-        if (!response.ok) {
-          console.log("[tc-calender] Label API: Response is not ok: " + await response.text());
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            console.log(
+              "[tc-calender] Label API: Response is not ok: " +
+                (await response.text())
+            );
+            return false;
+          }
+          this.labels = await response.json();
+          return true;
+        })
+        .catch((e) => {
+          console.log("[tc-calender] Label API: " + e.message);
           return false;
-        }
-        this.labels = await response.json();
-        return true;
-      }).catch(e => {
-        console.log("[tc-calender] Label API: " + e.message);
-        return false;
-      }),
+        }),
     ]);
     return loadTasksOk && loadLabelsOk;
   }
@@ -77,13 +87,12 @@ class TodoistApi {
       }
       const time = this.calcTime(task);
       const priority = 5 - task.priority;
-      this.tasksByDue[task.due.date].times += (time ?? 0);
-      this.tasksByDue[task.due.date].ptimes[priority] += (time ?? 0);
+      this.tasksByDue[task.due.date].times += time ?? 0;
+      this.tasksByDue[task.due.date].ptimes[priority] += time ?? 0;
       this.tasksByDue[task.due.date].count++;
       this.tasksByDue[task.due.date].pcount[priority]++;
       this.tasksByDue[task.due.date].tasks.push(task);
-      if (time == null)
-        this.tasksByDue[task.due.date].untimedCount++;
+      if (time == null) this.tasksByDue[task.due.date].untimedCount++;
     });
   }
 
@@ -180,8 +189,9 @@ $(() => {
         if (debugMode) console.log("[tc-calender]check start");
         // TC本体がない場合は終了
         if (!$("#tc-wrapper").length) {
-          if (debugMode) console.log("[tc-calender]check: tc-wrapper is not exist");
-         if ($("#tc-calender").length) $("#tc-calender").remove();
+          if (debugMode)
+            console.log("[tc-calender]check: tc-wrapper is not exist");
+          if ($("#tc-calender").length) $("#tc-calender").remove();
           return false;
         }
         // データの取得に失敗した場合は終了
@@ -206,7 +216,8 @@ $(() => {
         }
         // 予定日ごとのタスクデータを構築
         todoistApi.build();
-        if (debugMode) console.log("[tc-calender]build: data:", todoistApi.tasksByDue);
+        if (debugMode)
+          console.log("[tc-calender]build: data:", todoistApi.tasksByDue);
         //　表示
         view();
         return true;
@@ -268,7 +279,7 @@ $(() => {
               chrome.i18n.getMessage("wednesdayShort"),
               chrome.i18n.getMessage("thursdayShort"),
               chrome.i18n.getMessage("fridayShort"),
-              chrome.i18n.getMessage("saturdayShort")
+              chrome.i18n.getMessage("saturdayShort"),
             ][d.getDay()] +
             "</div><div>" +
             count +
@@ -298,7 +309,10 @@ $(() => {
           }
           // 時間未設定タスク数の表示
           if (options.tc_calender_untimed_tasks == "true" && untimedCount > 0) {
-            tc_calender_html += '<div class="untimed-count"><span>' + untimedCount + '</span></div>';
+            tc_calender_html +=
+              '<div class="untimed-count"><span>' +
+              untimedCount +
+              "</span></div>";
           }
           tc_calender_html += "</div>";
 
