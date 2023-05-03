@@ -1,5 +1,3 @@
-const debugMode = false; // ログ出力する場合はtrue
-
 class TodoistApi {
   timePrefix = "//";
   token;
@@ -145,6 +143,8 @@ class TodoistApi {
 }
 
 $(() => {
+  return;
+
   const defaultCalender = "false"; // 見積時間カレンダー使用の初期値
   const defaultCalenderAccent = "false"; // 背景色強調の初期値
   const defaultCalenderAccentMinTime = 10; // 背景色強調の下限時間の初期値
