@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-debugMode = false; // ログ出力する場合はtrue
+const debugMode = false; // ログ出力する場合はtrue
 
 const strall = chrome.i18n.getMessage("allDate"); // 日付を選択しない場合に表示される文字
 const strnone = chrome.i18n.getMessage("noDate"); // 日付を選択しない場合に表示される文字
@@ -19,6 +19,8 @@ const taskListParentId = ".main-view-layout"; // タスクリストを内包す�
 const tcCheckIntervalTime = 300; // タスクリストの変更をチェックする間隔の時間（ミリ秒）
 
 $(async function () {
+  if (debugMode) console.log("tc intialize start.");
+
   let tcCurrentDate = new Date();
   let tcStartDate;
 
@@ -86,6 +88,7 @@ $(async function () {
     curTaskContent = $(taskListParentId).html();
     // タスクアイテムが変わったら時間計測を実行
     if (taskContent != curTaskContent) {
+      if (debugMode) console.log("check: task change!");
       calcTime();
       taskContent = curTaskContent;
       tcWidth = $("#tc-wrapper").width();
@@ -94,6 +97,7 @@ $(async function () {
 
     // widthが変わったら時間計測を実行
     if (tcWidth != $("#tc-wrapper").width()) {
+      if (debugMode) console.log("check: width change!");
       calcTime();
       taskContent = curTaskContent;
       tcWidth = $("#tc-wrapper").width();
@@ -108,13 +112,17 @@ $(async function () {
     var date2 = new Date();
     var time2 = date2.getHours() + ":" + ("0" + date2.getMinutes()).slice(-2);
     if (time1 != time2) {
+      if (debugMode) console.log("check: time change!");
       calcTime();
       return true;
     }
+
+    if (debugMode) console.log("check: no change");
   };
 
   // 時間計算を定期実行
   setInterval(function () {
+    if (debugMode) console.log("check process start");
     check();
   }, tcCheckIntervalTime);
 

@@ -1,5 +1,3 @@
-const debugMode = false; // ログ出力する場合はtrue
-
 class TodoistApi {
   timePrefix = "//";
   token;
