@@ -398,7 +398,7 @@ $(async function () {
 
     // ラベルから集計
     $(el)
-      .find(".task_list_item__info_tags__label")
+      .find('a[href^="/app/label/"]')
       .each((_, label) => {
         const match = $(label)
           .text()
