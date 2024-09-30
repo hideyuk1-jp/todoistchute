@@ -361,14 +361,15 @@ $(async function () {
             var date = sectionDate;
           }
           if (date === "") date = strnone;
+          const $project = $(el).find('a[href^="/app/project/"]');
           var task = {
             id: el.dataset.itemId,
             body: $(el).find(".task_content").text(),
             time,
             date,
             project: {
-              name: $(el).find(".task_list_item__project").text(),
-              color: $(el).find(".task_list_item__project svg").css("color"),
+              name: $project.text(),
+              color: $project.html().match(/color: ([^;]+);/)[1],
             },
           };
 
