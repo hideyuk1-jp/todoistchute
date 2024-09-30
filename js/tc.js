@@ -188,8 +188,6 @@ $(async function () {
     if (tcDateVal != 'ALL') taskData = taskData.dateTasks[tcDateVal];
     if (debugMode) console.log('taskData: ', taskData);
 
-    tasks = taskData.tasks;
-
     // dateの準備
     var date = new Date();
     tcCurrentDate = new Date(date.getTime());
@@ -219,7 +217,7 @@ $(async function () {
 
     // 表示更新
     // 残りタスクを更新
-    $('#tc-cnt').text(tasks.length);
+    $('#tc-cnt').text(taskData.tasks.length);
     // 見積時間を更新
     $('#tc-hour').text((taskTime / 60).toFixed(1) + ' h');
     // 完了予定を更新
@@ -342,7 +340,7 @@ $(async function () {
             date,
             project: {
               name: $project.text(),
-              color: $project.html().match(/color: ([^;]+);/)[1],
+              color: $project.html()?.match(/color: ([^;]+);/)?.[1] ?? null,
             },
           };
 
